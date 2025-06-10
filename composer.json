@@ -1,0 +1,52 @@
+{
+  "name": "andy87/sdk-php-client",
+
+  "description": "SKD для создания клиентов отправляющих HTTP запросы к API.",
+
+  "keywords": ["and_y87", "php", "sdk", "client", "rest", "api"],
+
+  "homepage": "https://github.com/andy87/sdk-php-client",
+
+  "license": "CC-BY-SA-4.0",
+
+  "version": "0.1.0",
+
+  "minimum-stability": "dev",
+
+  "prefer-stable": true,
+
+  "authors": [
+    {
+      "name": "Kidin Andrey",
+      "email": "kidin_a@list.ru"
+    }
+  ],
+
+  "require": {
+    "php": ">=8.0",
+    "ext-curl": "*"
+  },
+
+  "require-dev": {
+    "yiisoft/yii2": "~2.0.14"
+  },
+
+  "autoload": {
+    "psr-4": {
+      "andy87\\sdk\\client\\": "src/"
+    }
+  },
+
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true
+    }
+  },
+
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
+}
