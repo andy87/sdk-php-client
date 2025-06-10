@@ -2,14 +2,74 @@
 
 namespace andy87\sdk\client;
 
-use andy87\sdk\client\base\Client;
-use andy87\sdk\client\base\Prompt;
-use andy87\sdk\client\base\Response;
+use andy87\sdk\client\base\{ Client, Prompt, Schema, Request, Response };
 
+/**
+ * Класс SdkClient
+ *
+ * Базовый класс для SDK клиента, который отправляет запросы к API и обрабатывает ответы.
+ *
+ * @package src
+ */
 abstract class SdkClient extends Client
 {
-    public array $headers = [];
+    /**
+     * Отправляет запрос к API и возвращает схему ответа.
+     *
+     * @param Prompt $prompt
+     *
+     * @return ?Schema
+     */
+    protected function send( Prompt $prompt ): ?Schema
+    {
+        $request = $this->constructRequest( $prompt );
 
-    abstract public function authorization(): bool;
-    abstract public function errorHandler( Prompt $prompt, Response $response ): bool;
+        $schema = $this->constructSchema( $request );
+
+        if ( $schema instanceof Schema )
+        {
+            if ( $schema->validate( $request->getSchema() ) )
+
+            return $schema;
+        }
+
+        $this->errorHandler( $prompt, $schema );
+
+        return null;
+    }
+
+    /**
+     * @param Prompt $prompt
+     *
+     * @return Request
+     */
+    private function constructRequest( Prompt $prompt ): Request
+    {
+        $request = new Request( $this, $prompt );
+
+        return $request;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return ?Schema
+     */
+    private function constructSchema( Request $request ): ?Schema
+    {
+        $request->call();
+
+        $schema = null;
+
+        if ($schema instanceof Schema) {
+            return $schema;
+        }
+
+        return null;
+    }
+
+    private function setupCache(?Response $Response)
+    {
+
+    }
 }

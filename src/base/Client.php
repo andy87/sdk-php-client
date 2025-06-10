@@ -2,25 +2,34 @@
 
 namespace andy87\sdk\client\base;
 
-class Client
+/**
+ * Класс Client
+ *  Содержет методы для отправки запросов к API и обработки ответов.
+ *
+ * @package src\base
+ */
+abstract class Client
 {
+    public array $headers = [];
+
     protected Config $config;
+
+    protected string $baseUrl;
+
+    //protected array $events = [];
+
 
 
     public function __construct( Config $config )
     {
         $this->config = $config;
+
+        $this->baseUrl = $config->getBaseUri();
     }
 
-    protected function send( Request $request ): Response
-    {
-        // Here you would implement the logic to send the request and return a Response object.
-        // This is just a placeholder for demonstration purposes.
-        $response = new Response();
-        $response->request = $request;
-        $response->statusCode = 200; // Example status code
-        $response->content = 'Response content'; // Example content
 
-        return $response;
-    }
+    abstract public function authorization(): bool;
+
+    abstract public function errorHandler( Prompt $prompt, Schema $schema ): bool;
+
 }
