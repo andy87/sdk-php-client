@@ -1,8 +1,6 @@
 <?php
 
-namespace andy87\sdk\client\base;
-
-use andy87\sdk\client\interfaces\DtoInterface;
+namespace andy87\sdk\client\core;
 
 /**
  * Class Response
@@ -10,10 +8,8 @@ use andy87\sdk\client\interfaces\DtoInterface;
  *
  * @package src\base
  */
-class Response implements DtoInterface
+class Response
 {
-    public Request $request;
-
     protected ?int $statusCode = null;
 
     protected ?string $content = null;
@@ -25,19 +21,16 @@ class Response implements DtoInterface
     /**
      * Response constructor.
      *
-     * @param Request $request
+     * @param int $statusCode
+     * @param ?string $content
      */
-    public function __construct( Request $request )
+    public function __construct( int $statusCode, ?string $content = null )
     {
-        // Обработка ответа
-    }
+        $this->statusCode = $statusCode;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function validate( string $scenario ) : bool
-    {
-        return true;
+        $this->content = $content;
+
+        if ($this->content) $this->result = json_decode( $content, true );
     }
 
     /**

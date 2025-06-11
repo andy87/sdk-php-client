@@ -24,7 +24,9 @@ abstract class SdkClient extends Client
     {
         $request = $this->constructRequest( $prompt );
 
-        $schema = $this->constructSchema( $request );
+        $response = $this->operator->sendRequest( $request );
+
+        $schema = $this->constructSchema( $prompt, $response );
 
         if ( $schema instanceof Schema )
         {
@@ -33,7 +35,11 @@ abstract class SdkClient extends Client
             return $schema;
         }
 
-        $this->errorHandler( $prompt, $schema );
+        $this->errorHandler([
+            'method' => __METHOD__,
+            'prompt' => $prompt,
+            'schema' => $schema
+        ]);
 
         return null;
     }
@@ -45,31 +51,57 @@ abstract class SdkClient extends Client
      */
     private function constructRequest( Prompt $prompt ): Request
     {
-        $request = new Request( $this, $prompt );
+        $className = $this->config->classRequest ?? Request::class;
 
-        return $request;
+        return new $className( $this, $prompt );
     }
 
     /**
-     * @param Request $request
+     * @param Response $response
      *
      * @return ?Schema
      */
-    private function constructSchema( Request $request ): ?Schema
+    private function constructSchema( Prompt $prompt, Response $response ): ?Schema
     {
-        $request->call();
+        $schemaClassName = $prompt->schema;
 
-        $schema = null;
+        if ( class_exists( $schemaClassName ) )
+        {
+            $result = $response->getResult();
 
-        if ($schema instanceof Schema) {
-            return $schema;
+            if ( $result ) {
+
+                /** @var Schema $schema */
+                $schema = new $schemaClassName( $result );
+
+                return $schema;
+            }
+
+            $this->errorHandler([
+                'method' => __METHOD__,
+                'message' => 'Response result is empty',
+                'schema' => $schemaClassName
+            ]);
+
+            return null;
         }
+
+        $this->errorHandler([
+            'method' => __METHOD__,
+            'message' => 'Schema class not found',
+            'schema' => $schemaClassName
+        ]);
 
         return null;
     }
 
-    private function setupCache(?Response $Response)
+    protected function setupCache( ?Schema $schema )
     {
+        if ( $schema && method_exists( $schema, 'getCacheKey' ) )
+        {
+            $key = $this->cache->getCacheKey( $this->config );
 
+            $this->cache->set($key, $schema, $this->config->cache->ttl);
+        }
     }
 }

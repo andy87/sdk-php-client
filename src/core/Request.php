@@ -1,8 +1,8 @@
 <?php
 
-namespace andy87\sdk\client\base;
+namespace andy87\sdk\client\core;
 
-use andy87\sdk\client\interfaces\RequestInterface;
+use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
  * Класс Test
@@ -14,17 +14,19 @@ use andy87\sdk\client\interfaces\RequestInterface;
 class Request implements RequestInterface
 {
     protected Client $client;
-    protected Query $query;
 
     protected Prompt $prompt;
 
+    protected Query $query;
 
-    protected ?int $statusCode = null;
 
-    protected ?string $content = null;
 
-    protected ?array $result = null;
-
+    /**
+     * Конструктор класса Request.
+     *
+     * @param Client $client
+     * @param Prompt $prompt
+     */
     public function __construct( Client $client, Prompt $prompt )
     {
         $this->client = $client;
@@ -39,18 +41,22 @@ class Request implements RequestInterface
      */
     public function setupQuery(): void
     {
-        $query = new Query();
+        $this->query = new Query(
+            $this->prompt->method,
+            $this->client->constructEndpoint($this->prompt->path)
+        );
 
-        $query->method = $this->prompt->method;
+        $headers = [];
 
-        $headers = [
-            'Content-Type' => $this->prompt->contentType,
-        ];
-
-        if ($this->prompt->isPrivate) {
-            $headers['Authorization'] = 'Bearer ' . $this->getAuthorizationToken();
+        if ($this->prompt->contentType) {
+            $headers['Content-Type'] = $this->prompt->contentType;
         }
 
+        if ($this->prompt->isPrivate) {
+            $this->client->prepareAuthorization($headers);
+        }
+
+        $this->query->headers = $headers;
     }
 
     public function call()

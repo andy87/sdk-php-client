@@ -1,6 +1,6 @@
 <?php
 
-namespace andy87\sdk\client\interfaces;
+namespace andy87\sdk\client\base\interfaces;
 
 use andy87\sdk\client\base\Prompt;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace andy87\sdk\client\base;
+namespace andy87\sdk\client\core;
 
 /**
  * Класс Query
@@ -27,7 +27,7 @@ class Query
      * @param string $endpoint URL-адрес конечной точки API, к которой будет отправлен запрос
      * @param array $data Дополнительные данные запроса
      */
-    public function __construct(string $method, string $endpoint, array $data = [] )
+    public function __construct( string $method, string $endpoint, array $data = [] )
     {
         $this->method = $method;
 

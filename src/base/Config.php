@@ -3,6 +3,7 @@
 namespace andy87\sdk\client\base;
 
 use andy87\sdk\client\helpers\Port;
+use andy87\sdk\client\base\interfaces\AccountInterface;
 
 /**
  * BКонфигурация базового клиента API.
@@ -15,7 +16,7 @@ abstract class Config
     public string $port = Port::HTTPS;
 
 
-    /** @var string $host Базовый URI API, (например: https://api.example.com") */
+    /** @var string $host Базовый URI API, (например: api.example.com") */
     public string $host;
 
 
@@ -26,12 +27,40 @@ abstract class Config
     /** @var array $headers Заголовки используемые всеми запросами */
     public array $headers = [];
 
-    public string $classRequest = Request::class;
-    public string $classResponse = Response::class;
-    public string $classOperator = Operator::class;
 
-    public string $classLogger;
+    /** @var AccountInterface $account */
+    public AccountInterface $account;
 
+
+
+    /** Конструктор класса Config.
+     *
+     * @param Account $account Аккаунт, связанный с конфигурацией.
+     */
+    public function __construct( AccountInterface $account )
+    {
+        $this->setAccount($account);
+    }
+
+    /**
+     * Получение аккаунта.
+     *
+     * @return Account Аккаунт, связанный с конфигурацией.
+     */
+    public function getAccount(): AccountInterface
+    {
+        return $this->account;
+    }
+
+    /**
+     * Установка аккаунта.
+     *
+     * @param AccountInterface $account Аккаунт, связанный с конфигурацией.
+     */
+    public function setAccount( AccountInterface $account ): void
+    {
+        $this->account = $account;
+    }
 
     /**
      * Получение полного базового URI.

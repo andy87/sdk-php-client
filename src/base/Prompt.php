@@ -4,7 +4,7 @@ namespace andy87\sdk\client\base;
 
 use andy87\sdk\client\helpers\Method;
 use andy87\sdk\client\helpers\ContentType;
-use andy87\sdk\client\interfaces\PromptInterface;
+use andy87\sdk\client\base\interfaces\PromptInterface;
 
 /**
  * Класс Prompt
@@ -13,7 +13,7 @@ use andy87\sdk\client\interfaces\PromptInterface;
  *
  * @package src\base
  */
-class Prompt implements PromptInterface
+abstract class Prompt implements PromptInterface
 {
     public string $schema;
 
@@ -21,7 +21,7 @@ class Prompt implements PromptInterface
 
     public string $method = Method::GET;
 
-    public string $contentType = ContentType::APPLICATION_JSON;
+    public ?string $contentType = null;
 
     public bool $isPrivate = false;
 
