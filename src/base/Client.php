@@ -2,9 +2,13 @@
 
 namespace andy87\sdk\client\base;
 
+use Exception;
+use andy87\sdk\client\core\Modules;
+use andy87\sdk\client\core\Response;
 use andy87\sdk\client\core\Container;
-use Psr\Container\ContainerInterface;
+use andy87\sdk\client\base\interfaces\TestInterface;
 use andy87\sdk\client\base\interfaces\ClientInterface;
+use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
  * Класс Client
@@ -16,11 +20,13 @@ abstract class Client implements ClientInterface
 {
     protected const CONTAINER_CLASS = Container::class;
 
+
+
     /** @var Config $config Конфигурация клиента */
     protected Config $config;
 
-    /** @var ?ContainerInterface $container Контейнер для хранения классов, используемых в клиенте */
-    public ?ContainerInterface $container = null;
+    /** @var Modules $modules Модули клиента */
+    public Modules $modules;
 
 
 
@@ -28,76 +34,65 @@ abstract class Client implements ClientInterface
      * Конструктор
      *
      * @param Config $config
+     *
+     * @throws Exception
      */
-    public function __construct( Config $config, array $container = [] )
+    public function __construct( Config $config )
     {
-        $this->config = $config;
+        $this->config = $this->prepareConfig( $config );
 
-        $this->setupContainer($container);
-
-        $this->setupOperator();
-
-        $this->setupCache();
+        $this->setupModules( $this->config );
     }
 
     /**
-     * Устанавливает контейнер для хранения классов, используемых в клиенте.
+     * Кастомизация конфигурации клиента, если необходимо
      *
-     * @param array $container
+     * @param Config $config
      *
-     * @return void
+     * @return Config
      */
-    private function setupContainer( array $container ): void
+    protected function prepareConfig( Config $config ): Config
     {
-        if ( $this->container === null )
-        {
-            $className = $this->config->getContainerClass() ?? self::CONTAINER_CLASS;
-
-            if ( class_exists( $className ) )
-            {
-                $this->container = new $className();
-            } else {
-                $this->errorHandler([
-                    'method' => __METHOD__,
-                    'message' => 'Container class not found. Please set the container class in the config.',
-                    'class' => self::CONTAINER_CLASS,
-                ]);
-            }
-        }
+        return $config;
     }
 
     /**
-     * Устанавливает оператор для отправки запросов.
+     * Устанавливает модули для работы клиента.
+     *
+     * @param Config $config
      *
      * @return void
+     *
+     * @throws Exception
      */
-    private function setupOperator(): void
+    public function setupModules( Config $config ): void
     {
-        $className = $this->container[self::OPERATOR] ?? null;
+        $container = $this->constructContainer( $config );
 
-        if ($className)
-        {
-            $this->operator = new $className( $this, $this->config );
-
-        } else {
-            $this->errorHandler([
-                'method' => __METHOD__,
-                'message' => 'Operator class not found. Please set the operator class in the container.',
-                'class' => self::OPERATOR,
-            ]);
-        }
+        $this->modules = new Modules( $container );
     }
 
-    private function setupCache(): void
+    /**
+     * Конструирует контейнер для хранения классов, используемых в клиенте.
+     *
+     * @param Config $config
+     *
+     * @return Container
+     *
+     * @throws Exception
+     */
+    protected function constructContainer( Config $config ): Container
     {
-        $className = $this->container[self::CACHE] ?? null;
+        $containerClass = static::CONTAINER_CLASS;
 
-        if ( $this->config->classCache )
+        $container = new $containerClass( $config->classes );
+
+        if ( $container instanceof Container )
         {
-            $className = $this->config->classCache;
-
-            $this->cache = new $className( $this );
+            return $container;
         }
+
+        throw new Exception( 'Container not found' );
     }
 
     /**
@@ -108,12 +103,55 @@ abstract class Client implements ClientInterface
         return $this->config->getBaseUri() . '/' . $path;
     }
 
-    public function test()
+    /**
+     * Метод для запуска тестов в клиенте.
+     */
+    public function test(): void
     {
-        $this->test->run();
+        if ($this->modules->test instanceof TestInterface )
+        {
+            $this->modules->test->run();
+        }
     }
 
-    abstract public function authorization(): bool;
 
-    abstract public function errorHandler( string|array $data ): bool;
+
+    /**
+     * Метод для добавления данных требуемых для авторизации.
+     */
+    public function prepareAuthentication( RequestInterface $request ): void
+    {
+        // Логика установки данных для выполнения запросов требующих авторизации
+    }
+
+    /**
+     * Метод для авторизации пользователя.
+     *
+     * @param Account $account
+     *
+     * @return bool
+     */
+    public function authorization( Account $account ): bool
+    {
+        // Логика авторизации
+        return true;
+    }
+
+    public function errorHandler( string|array $data ): void
+    {
+        // Логика обработки ошибок
+    }
+
+    /**
+     * Метод проверяет есть ли ошибки в ответе, решаемая повторной авторизацией
+     *
+     * @param Response $response
+     *
+     * @return bool
+     */
+    public function isAuthorizationError( Response $response ): bool
+    {
+        // Логика проверки ошибок авторизации
+        return false;
+    }
 }

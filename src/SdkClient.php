@@ -2,7 +2,13 @@
 
 namespace andy87\sdk\client;
 
-use andy87\sdk\client\base\{ Client, Prompt, Schema, Request, Response };
+
+use andy87\sdk\client\base\Client;
+use andy87\sdk\client\base\interfaces\RequestInterface;
+use andy87\sdk\client\base\Prompt;
+use andy87\sdk\client\base\Schema;
+use andy87\sdk\client\core\Request;
+use andy87\sdk\client\core\Response;
 
 /**
  * Класс SdkClient
@@ -24,22 +30,62 @@ abstract class SdkClient extends Client
     {
         $request = $this->constructRequest( $prompt );
 
-        $response = $this->operator->sendRequest( $request );
+        $response = $this->modules->operator->sendRequest( $request );
 
-        $schema = $this->constructSchema( $prompt, $response );
-
-        if ( $schema instanceof Schema )
-        {
-            if ( $schema->validate( $request->getSchema() ) )
-
-            return $schema;
-        }
-
-        $this->errorHandler([
+        $log = [
             'method' => __METHOD__,
             'prompt' => $prompt,
-            'schema' => $schema
-        ]);
+            'request' => $request,
+            'response' => $response
+        ];
+
+        if ( $this->isAuthorizationError( $response ) )
+        {
+            $account = $this->config->getAccount();
+
+            if ( $this->authorization( $account ) )
+            {
+               $request = $this->constructRequest( $prompt );
+
+               $response = $this->modules->operator->sendRequest( $request );
+
+                if ( $this->isAuthorizationError( $response ) )
+                {
+                    $log['message'] = 'Authorization error after re-authorization';
+                    $log['request'] = $request;
+                    $log['response'] = $response;
+                }
+            }
+        }
+
+        if ( $response->isOk() )
+        {
+            if ( $schema = $this->constructSchema( $request, $response ) )
+            {
+                $log['schema'] = [
+                    'object' => $schema,
+                ];
+
+                if ( $schema->validate( $prompt ) )
+                {
+                    return $schema;
+
+                } else {
+
+                    $log['message'] = 'Schema validation error';
+                    $log['schema']['_errors'] = $schema->getErrors();
+                }
+
+            } else {
+
+                $log['message'] = 'Schema class not found or invalid response';
+            }
+        } else {
+
+            $log['message'] = 'Response error';
+        }
+
+        $this->errorHandler($log);
 
         return null;
     }
@@ -51,57 +97,35 @@ abstract class SdkClient extends Client
      */
     private function constructRequest( Prompt $prompt ): Request
     {
-        $className = $this->config->classRequest ?? Request::class;
+        $requestClassName = $this->modules->container->classList[RequestInterface::class];
 
-        return new $className( $this, $prompt );
+        /** @var Request $request */
+        $request = new $requestClassName( $this, $prompt );
+
+        return $request;
     }
 
     /**
+     * @param Request $request
      * @param Response $response
      *
      * @return ?Schema
      */
-    private function constructSchema( Prompt $prompt, Response $response ): ?Schema
+    private function constructSchema( Request $request, Response $response ): ?Schema
     {
-        $schemaClassName = $prompt->schema;
+        $schemaClassName = $request->getPrompt()->getSchema();
 
         if ( class_exists( $schemaClassName ) )
         {
-            $result = $response->getResult();
-
-            if ( $result ) {
-
+            if ( $result = $response->getResult() )
+            {
                 /** @var Schema $schema */
                 $schema = new $schemaClassName( $result );
 
                 return $schema;
             }
-
-            $this->errorHandler([
-                'method' => __METHOD__,
-                'message' => 'Response result is empty',
-                'schema' => $schemaClassName
-            ]);
-
-            return null;
         }
-
-        $this->errorHandler([
-            'method' => __METHOD__,
-            'message' => 'Schema class not found',
-            'schema' => $schemaClassName
-        ]);
 
         return null;
-    }
-
-    protected function setupCache( ?Schema $schema )
-    {
-        if ( $schema && method_exists( $schema, 'getCacheKey' ) )
-        {
-            $key = $this->cache->getCacheKey( $this->config );
-
-            $this->cache->set($key, $schema, $this->config->cache->ttl);
-        }
     }
 }

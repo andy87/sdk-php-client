@@ -97,7 +97,7 @@ abstract class Schema implements SchemaInterface
     /**
      * {@inheritDoc}
      */
-    public function validate( string $schema ): bool
+    public function validate( Prompt $prompt ): bool
     {
         return true;
     }

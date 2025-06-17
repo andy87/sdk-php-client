@@ -2,6 +2,8 @@
 
 namespace andy87\sdk\client\base\interfaces;
 
+use andy87\sdk\client\base\Prompt;
+
 /**
  * Interface ResponseInterface
  *
@@ -14,9 +16,9 @@ interface SchemaInterface
     /**
      * Проверяет валидность ответа по схеме.
      *
-     * @param string $schema Схема которая проверяется на валидность.
+     * @param Prompt $prompt Объект запроса
      *
      * @return bool Возвращает true, если ответ валиден, иначе false.
      */
-    public function validate( string $schema ): bool;
+    public function validate( Prompt $prompt ): bool;
 }

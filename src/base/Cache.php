@@ -14,17 +14,47 @@ use andy87\sdk\client\base\interfaces\CacheInterface;
  */
 abstract class Cache implements CacheInterface
 {
+    /**
+     * Массив для хранения данных.
+     *
+     * @var array $data
+     */
     protected array $data = [];
 
-    public function __construct( array $data= [] )
+
+
+    /**
+     * Конструктор класса Cache.
+     *
+     * @param Account $account
+     * @param array $data
+     */
+    public function __construct( Account $account, array $data= [] )
     {
         if ( !empty( $data ) )
         {
-            $this->setData( $data );
+            $this->data = $data;
+
+            $this->setData( $account, $this->data );
         }
     }
 
-    abstract public function setData( array $data ): void;
+    /**
+     * Записывает данные в кэш для указанного аккаунта.
+     *
+     * @param Account $account
+     * @param array $data
+     *
+     * @return bool
+     */
+    abstract public function setData( Account $account, array $data ): bool;
 
-    abstract public function getData(): array;
+    /**
+     * Получает данные из кэша для указанного аккаунта.
+     *
+     * @param Account $account
+     *
+     * @return ?array
+     */
+    abstract public function getData( Account $account ): ?array;
 }

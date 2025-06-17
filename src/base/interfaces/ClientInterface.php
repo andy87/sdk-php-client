@@ -2,6 +2,8 @@
 
 namespace andy87\sdk\client\base\interfaces;
 
+use andy87\sdk\client\base\Account;
+
 /**
  * Interface CacheInterface
  * Represents a cache interface for storing and retrieving data.
@@ -18,7 +20,6 @@ interface ClientInterface
     public const CLIENT = 'client';
     public const LOGGER = 'logger';
     public const ACCOUNT = 'account';
-    public const OPERATOR = 'operator';
 
 
 
@@ -31,7 +32,7 @@ interface ClientInterface
      */
     public function constructEndpoint( string|int $path ): string;
 
-    public function authorization();
+    public function authorization( Account $account ): bool;
 
-    public function errorHandler( string|array $data );
+    public function errorHandler( string|array $data ): void;
 }

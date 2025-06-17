@@ -3,7 +3,6 @@
 namespace andy87\sdk\client\base;
 
 use andy87\sdk\client\helpers\Method;
-use andy87\sdk\client\helpers\ContentType;
 use andy87\sdk\client\base\interfaces\PromptInterface;
 
 /**
@@ -15,15 +14,87 @@ use andy87\sdk\client\base\interfaces\PromptInterface;
  */
 abstract class Prompt implements PromptInterface
 {
-    public string $schema;
+    protected string $schema;
 
-    public string $path;
+    protected string $path;
 
-    public string $method = Method::GET;
+    protected string $method = Method::GET;
 
-    public ?string $contentType = null;
+    protected ?string $contentType = null;
 
-    public bool $isPrivate = false;
+    protected bool $isPrivate = false;
 
-    public array $headers = [];
+    protected array $headers = [];
+
+
+    /**
+     * Возвращает схему запроса.
+     *
+     * @return string
+     */
+    public function getSchema(): string
+    {
+        return $this->schema;
+    }
+
+    /**
+     * Возвращает путь запроса.
+     *
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    /**
+     * Возвращает метод запроса.
+     *
+     * @return string
+     */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
+     * Возвращает тип контента запроса.
+     *
+     * @return ?string
+     */
+    public function getContentType(): ?string
+    {
+        return $this->contentType;
+    }
+
+    /**
+     * Возвращает значение, является ли запрос приватным( требует авторизации).
+     *
+     * @return bool
+     */
+    public function isPrivate(): bool
+    {
+        return $this->isPrivate;
+    }
+
+    /**
+     * Возвращает заголовки запроса.
+     *
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    /**
+     * Возвращает все публичные свойства запроса.
+     * используя простой каст в массив.
+     *
+     * @return ?array
+     */
+    public function release(): ?array
+    {
+        return get_object_vars($this) ?? null;
+    }
 }

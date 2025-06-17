@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\core;
 
+use Exception;
 use andy87\sdk\client\base\Test;
 use andy87\sdk\client\SdkClient;
 use andy87\sdk\client\base\Cache;
@@ -28,7 +29,10 @@ use andy87\sdk\client\base\interfaces\OperatorInterface;
  */
 class Container implements ContainerInterface
 {
-    protected array $mapping = [
+    /**
+     * @var array $mapping Массив для хранения классов и их соответствующих ID
+     */
+    public const DEFAULT_CLASS_LIST = [
         TestInterface::class => Test::class,
         CacheInterface::class => Cache::class,
         LoggerInterface::class => Logger::class,
@@ -40,25 +44,68 @@ class Container implements ContainerInterface
         OperatorInterface::class => Operator::class,
     ];
 
+
+
+    /**
+     * @var array $classList Массив для хранения классов и их соответствующих объектов.
+     * Ключ - это ID, значение - это имя класса или вызываемый объект.
+     */
+    public array $classList = [];
+
+
+
     /**
      * Конструктор
      *
-     * @var array $mapping
+     * @param array $classList
      */
-    public function __construct( array $mapping = [] )
+    public function __construct( array $classList = [] )
     {
-        if (!empty($mapping)) {
-            $this->mapping = array_merge( $this->mapping, $mapping );
+        $this->classList = array_merge( static::DEFAULT_CLASS_LIST, $classList );
+    }
+
+    /**
+     * Получает объект по заданному ID из контейнера.
+     * Если объект не существует, он будет создан на основе класса или вызываемого объекта.
+     *
+     * @param string $id
+     *
+     * @return object
+     *
+     * @throws Exception
+     */
+    public function get(string $id): object
+    {
+        $object = $this->classList[$id] ?? null;
+
+        if (is_string($object))
+        {
+            if (class_exists($object))
+            {
+                $this->classList[$id] = new $object();;
+
+            } else {
+
+                throw new Exception("String '$object' by ID: '$id' does not exists class.");
+            }
+
+        } else if (is_callable($object)) {
+
+            $this->classList[$id] = $object();
         }
+
+        return $this->classList[$id];
     }
 
-    public function get(string $id)
+    /**
+     * Проверяет, существует ли объект в контейнере по заданному ID.
+     *
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function has(string $id): bool
     {
-        return $this->mapping[$id];
-    }
-
-    public function has(string $id)
-    {
-
+        return isset($this->classList[$id]) && is_object($this->classList[$id] ?? null);
     }
 }

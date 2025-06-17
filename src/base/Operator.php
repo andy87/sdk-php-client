@@ -3,6 +3,7 @@
 namespace andy87\sdk\client\base;
 
 use Exception;
+use andy87\sdk\client\base\interfaces\OperatorInterface;
 
 /**
  * Класс Operator
@@ -11,7 +12,7 @@ use Exception;
  *
  * @package src\base
  */
-abstract class Operator
+abstract class Operator implements OperatorInterface
 {
     protected Client $client;
 
@@ -23,9 +24,13 @@ abstract class Operator
         $this->client = $client;
     }
 
-    abstract public function sendRequest( Request $request ): Response;
-
-
+    /**
+     * Обработчик ошибок
+     *
+     * @param string|array|Exception $data
+     *
+     * @return void
+     */
     protected function errorHandler( string|array|Exception $data ): void
     {
         if ( $data instanceof Exception )

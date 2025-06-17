@@ -2,6 +2,8 @@
 
 namespace andy87\sdk\client\core;
 
+use andy87\sdk\client\base\Client;
+use andy87\sdk\client\base\Prompt;
 use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
@@ -42,60 +44,40 @@ class Request implements RequestInterface
     public function setupQuery(): void
     {
         $this->query = new Query(
-            $this->prompt->method,
-            $this->client->constructEndpoint($this->prompt->path)
+            $this->prompt->getMethod(),
+            $this->client->constructEndpoint(
+                $this->prompt->getPath()
+            )
         );
 
+        $this->query->setHeaders( $this->getHeaders() );
+
+        $this->query->setData( $this->prompt->release() );
+    }
+
+    /**
+     * Constructs the headers for the request.
+     *
+     * @return array
+     */
+    protected function getHeaders(): array
+    {
         $headers = [];
 
-        if ($this->prompt->contentType) {
-            $headers['Content-Type'] = $this->prompt->contentType;
+        if ( $contentType = $this->prompt->getContentType()) {
+            $headers['Content-Type'] = $contentType;
         }
 
-        if ($this->prompt->isPrivate) {
-            $this->client->prepareAuthorization($headers);
-        }
-
-        $this->query->headers = $headers;
+        return $headers;
     }
 
-    public function call()
+    public function getPrompt(): Prompt
     {
-        $response = new Response();
-        $response->request = $this;
-        $response->statusCode = 200; // Example status code
-        $response->content = 'Response content'; // Example content
-
-        return $response;
+        return $this->prompt;
     }
 
-    /**
-     * Возвращает сценарий запроса.
-     *
-     * @return string
-     */
-    public function getSchema(): string
+    public function getQuery(): Query
     {
-        return $this->prompt->schema;
-    }
-
-    /**
-     * Возвращает токен авторизации.
-     *
-     * @return string
-     */
-    public function getStatusCode(): ?int
-    {
-        return $this->statusCode;
-    }
-
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
-
-    public function getResult(): ?array
-    {
-        return $this->result;
+        return $this->query;
     }
 }
