@@ -7,8 +7,7 @@ use andy87\sdk\client\base\interfaces\CacheInterface;
 /**
  * Класс Cache
  *
- * Base class for cache implementations.
- * Provides a structure for setting and getting cached data.
+ * Родительский класс для пользовательских реализаций класса содержащего логику кэширования данных.
  *
  * @package src\base
  */

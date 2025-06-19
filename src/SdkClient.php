@@ -3,17 +3,18 @@
 namespace andy87\sdk\client;
 
 
+use Exception;
 use andy87\sdk\client\base\Client;
-use andy87\sdk\client\base\interfaces\RequestInterface;
 use andy87\sdk\client\base\Prompt;
 use andy87\sdk\client\base\Schema;
 use andy87\sdk\client\core\Request;
 use andy87\sdk\client\core\Response;
+use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
  * Класс SdkClient
  *
- * Базовый класс для SDK клиента, который отправляет запросы к API и обрабатывает ответы.
+ * SDK клиента, представляющий слой который содержет логику тправки запросов к API и обрабатку ответа.
  *
  * @package src
  */
@@ -25,6 +26,8 @@ abstract class SdkClient extends Client
      * @param Prompt $prompt
      *
      * @return ?Schema
+     *
+     * @throws Exception
      */
     protected function send( Prompt $prompt ): ?Schema
     {
@@ -39,24 +42,7 @@ abstract class SdkClient extends Client
             'response' => $response
         ];
 
-        if ( $this->isAuthorizationError( $response ) )
-        {
-            $account = $this->config->getAccount();
-
-            if ( $this->authorization( $account ) )
-            {
-               $request = $this->constructRequest( $prompt );
-
-               $response = $this->modules->operator->sendRequest( $request );
-
-                if ( $this->isAuthorizationError( $response ) )
-                {
-                    $log['message'] = 'Authorization error after re-authorization';
-                    $log['request'] = $request;
-                    $log['response'] = $response;
-                }
-            }
-        }
+        $response = $this->handleResponse( $prompt, $response );
 
         if ( $response->isOk() )
         {
@@ -91,13 +77,51 @@ abstract class SdkClient extends Client
     }
 
     /**
+     * Проверяет, является ли ответ ошибкой авторизации.
+     *
+     * @param Prompt $prompt Объект запроса, содержащий информацию о запросе.
+     * @param Response $response Ответ от API, который нужно проверить на наличие ошибок авторизации.
+     *
+     * @return Response
+     */
+    private function handleResponse( Prompt $prompt, Response $response ): Response
+    {
+        if ( $this->isAuthorizationError( $response ) )
+        {
+            $account = $this->config->getAccount();
+
+            if ( $this->authorization( $account ) )
+            {
+                $request = $this->constructRequest( $prompt );
+
+                $response = $this->modules->operator->sendRequest( $request );
+
+                if ( $this->isAuthorizationError( $response ) )
+                {
+                    $this->errorHandler([
+                        'method' => __METHOD__,
+                        'message' => 'Authorization error after re-authorization',
+                        'prompt' => $prompt,
+                        'request' => $request,
+                        'response' => $response
+                    ]);
+                }
+            }
+        }
+
+        return $response;
+    }
+
+    /**
      * @param Prompt $prompt
      *
      * @return Request
+     *
+     * @throws Exception
      */
     private function constructRequest( Prompt $prompt ): Request
     {
-        $requestClassName = $this->modules->container->classList[RequestInterface::class];
+        $requestClassName = $this->modules->container->getClassRegistry( RequestInterface::class );
 
         /** @var Request $request */
         $request = new $requestClassName( $this, $prompt );

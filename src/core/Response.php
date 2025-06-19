@@ -25,7 +25,15 @@ class Response
      */
     protected ?array $result = null;
 
-    protected ?array $params = null;
+    /**
+     * @var array|null $customParams Дополнительные параметры ответа
+     */
+    protected ?array $customParams = null;
+
+    /**
+     * @var array $errors Список ошибок(если они есть)
+     */
+    protected array $_errors = [];
 
 
 
@@ -83,21 +91,20 @@ class Response
      *
      * @return ?array
      */
-    public function getParams(): ?array
+    public function getCustomParams(): ?array
     {
-        return $this->params;
+        return $this->customParams;
     }
 
     /**
      * Устанавливает параметры ответа.
      *
-     * @param array $params
+     * @param array $customParams
      */
-    public function setParams( array $params ): void
+    public function setCustomParams(array $customParams ): void
     {
-        $this->params = $params;
+        $this->customParams = $customParams;
     }
-
 
     /**
      * Проверяет, является ли ответ успешным (код статуса 2xx).
@@ -107,5 +114,25 @@ class Response
     public function isOk(): bool
     {
         return $this->statusCode AND ( $this->statusCode >= 200 && $this->statusCode < 300 );
+    }
+
+    /**
+     * Возвращает ошибки, если они есть.
+     *
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->_errors;
+    }
+
+    /**
+     * Добавляет ошибку в список ошибок.
+     *
+     * @param string $error
+     */
+    public function addError( string $error ): void
+    {
+        $this->_errors[] = $error;
     }
 }

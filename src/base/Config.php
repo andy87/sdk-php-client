@@ -3,7 +3,7 @@
 namespace andy87\sdk\client\base;
 
 use andy87\sdk\client\helpers\Port;
-use andy87\sdk\client\core\Container;
+use andy87\sdk\client\core\ClassRegistry;
 use andy87\sdk\client\base\interfaces\AccountInterface;
 
 /**
@@ -42,7 +42,7 @@ abstract class Config
      * @param Account $account Аккаунт, связанный с конфигурацией.
      * @param array $classes Список конфигурации контейнера
      */
-    public function __construct( AccountInterface $account, array $classes = Container::DEFAULT_CLASS_LIST )
+    public function __construct( AccountInterface $account, array $classes = ClassRegistry::DEFAULT )
     {
         $this->account = $account;
 

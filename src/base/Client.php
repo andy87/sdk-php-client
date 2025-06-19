@@ -12,7 +12,7 @@ use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
  * Класс Client
- *  Содержет методы для отправки запросов к API и обработки ответов.
+ *  Базовый класс клиента содержащий методы для работы клиента.
  *
  * @package src\base
  */

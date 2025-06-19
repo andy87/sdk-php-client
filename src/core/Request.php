@@ -7,11 +7,12 @@ use andy87\sdk\client\base\Prompt;
 use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
- * Класс Test
+ * Класс Request
  *
- * Represents a base class for tests.
+ * Содержет данные запроса и промпт, используемые для отправки запроса к API.
+ * Реализует интерфейс RequestInterface.
  *
- * @package src\base
+ * @package src\core
  */
 class Request implements RequestInterface
 {
@@ -43,16 +44,17 @@ class Request implements RequestInterface
      */
     public function setupQuery(): void
     {
-        $this->query = new Query(
-            $this->prompt->getMethod(),
-            $this->client->constructEndpoint(
-                $this->prompt->getPath()
-            )
-        );
+        $queryClass = $this->client->modules->container->getClassRegistry(Query::class );
 
-        $this->query->setHeaders( $this->getHeaders() );
+        $method = $this->prompt->getMethod();
 
-        $this->query->setData( $this->prompt->release() );
+        $endpoint = $this->client->constructEndpoint( $this->prompt->getPath() );
+
+        $data = $this->prompt->release();
+
+        $headers = $this->getHeaders();
+
+        $this->query = new $queryClass( $method, $endpoint, $data, $headers );
     }
 
     /**
@@ -71,11 +73,21 @@ class Request implements RequestInterface
         return $headers;
     }
 
+    /**
+     * Возвращает prompt запроса.
+     *
+     * @return Prompt
+     */
     public function getPrompt(): Prompt
     {
         return $this->prompt;
     }
 
+    /**
+     * Возвращает Query запроса.
+     *
+     * @return Query
+     */
     public function getQuery(): Query
     {
         return $this->query;

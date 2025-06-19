@@ -3,65 +3,37 @@
 namespace andy87\sdk\client\core;
 
 use Exception;
-use andy87\sdk\client\base\Test;
-use andy87\sdk\client\SdkClient;
-use andy87\sdk\client\base\Cache;
-use andy87\sdk\client\base\Schema;
-use andy87\sdk\client\base\Account;
-use andy87\sdk\client\base\Operator;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
-use andy87\sdk\client\base\interfaces\TestInterface;
-use andy87\sdk\client\base\interfaces\CacheInterface;
-use andy87\sdk\client\base\interfaces\SchemaInterface;
-use andy87\sdk\client\base\interfaces\ClientInterface;
-use andy87\sdk\client\base\interfaces\LoggerInterface;
-use andy87\sdk\client\base\interfaces\AccountInterface;
-use andy87\sdk\client\base\interfaces\RequestInterface;
-use andy87\sdk\client\base\interfaces\OperatorInterface;
 
 /**
  * Class Container
  *
  * Контейнер для хранения зависимостей, таких как запросы, ответы, операторы, логгеры и кэш.
  *
- * @package andy87\sdk\client\base
+ * @package andy87\sdk\client\core
  */
 class Container implements ContainerInterface
 {
     /**
-     * @var array $mapping Массив для хранения классов и их соответствующих ID
+     * @var ClassRegistry $classRegistry Объект содержащий список используемых классов.
      */
-    public const DEFAULT_CLASS_LIST = [
-        TestInterface::class => Test::class,
-        CacheInterface::class => Cache::class,
-        LoggerInterface::class => Logger::class,
-        SchemaInterface::class => Schema::class,
-        ClientInterface::class => SdkClient::class,
-        AccountInterface::class => Account::class,
-        RequestInterface::class => Request::class,
-        ResponseInterface::class => Response::class,
-        OperatorInterface::class => Operator::class,
-    ];
-
-
+    private ClassRegistry $classRegistry;
 
     /**
-     * @var array $classList Массив для хранения классов и их соответствующих объектов.
-     * Ключ - это ID, значение - это имя класса или вызываемый объект.
+     * @var array $instances Массив для хранения созданных объектов.
      */
-    public array $classList = [];
+    private array $instances = [];
 
 
 
     /**
      * Конструктор
      *
-     * @param array $classList
+     * @param ClassRegistry $classRegistry
      */
-    public function __construct( array $classList = [] )
+    public function __construct( ClassRegistry $classRegistry )
     {
-        $this->classList = array_merge( static::DEFAULT_CLASS_LIST, $classList );
+        $this->classRegistry = $classRegistry;
     }
 
     /**
@@ -74,27 +46,24 @@ class Container implements ContainerInterface
      *
      * @throws Exception
      */
-    public function get(string $id): object
+    public function get( string $id ): object
     {
-        $object = $this->classList[$id] ?? null;
-
-        if (is_string($object))
+        if ( !isset($this->instances[$id]) )
         {
-            if (class_exists($object))
+            if ($class = $this->classRegistry->getClass($id))
             {
-                $this->classList[$id] = new $object();;
+                if ( class_exists($class) )
+                {
+                    $this->instances[$id] = new $class();
 
-            } else {
+                } elseif ( is_callable($class) ) {
 
-                throw new Exception("String '$object' by ID: '$id' does not exists class.");
+                    $this->instances[$id] = $class();
+                }
             }
-
-        } else if (is_callable($object)) {
-
-            $this->classList[$id] = $object();
         }
 
-        return $this->classList[$id];
+        return $this->instances[$id];
     }
 
     /**
@@ -104,8 +73,22 @@ class Container implements ContainerInterface
      *
      * @return bool
      */
-    public function has(string $id): bool
+    public function has( string $id ): bool
     {
         return isset($this->classList[$id]) && is_object($this->classList[$id] ?? null);
+    }
+
+    /**
+     * Возвращает класс реестра по ID.
+     *
+     * @param string $id ID класса, который нужно получить из реестра.
+     *
+     * @return ?string
+     *
+     * @throws Exception
+     */
+    public function getClassRegistry( string $id ): ?string
+    {
+        return $this->classRegistry->getClass( $id );
     }
 }

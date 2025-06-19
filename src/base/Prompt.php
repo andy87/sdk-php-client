@@ -14,17 +14,45 @@ use andy87\sdk\client\base\interfaces\PromptInterface;
  */
 abstract class Prompt implements PromptInterface
 {
-    protected string $schema;
-
-    protected string $path;
-
-    protected string $method = Method::GET;
-
-    protected ?string $contentType = null;
-
+    /**
+     * @var bool $isPrivate
+     * Флаг, указывающий, является ли запрос приватным (требует авторизации).
+     */
     protected bool $isPrivate = false;
 
+    /**
+     * @var string $schema
+     * Схема запроса, определяющая структуру и правила валидации.
+     */
+    protected string $schema;
+
+
+    /**
+     * @var string $method
+     * Метод HTTP запроса (GET, POST, PUT, DELETE и т.д.).
+     */
+    protected string $method = Method::GET;
+
+    /**
+     * @var string $path
+     * Путь запроса, указывающий на конечную точку API.
+     */
+    protected string $path;
+
+    /**
+     * @var array $headers
+     * Заголовки запроса, которые могут включать авторизационные токены и другие метаданные.
+     */
     protected array $headers = [];
+
+
+    /**
+     * @var ?string $contentType
+     * Тип контента запроса, например, 'application/json'.
+     * Может быть null, если тип не задан.
+     */
+    protected ?string $contentType = null;
+
 
 
     /**

@@ -2,10 +2,13 @@
 
 namespace andy87\sdk\client\core\operators;
 
-use andy87\sdk\client\base\Operator;
+use Exception;
+use CurlHandle;
+use andy87\sdk\client\core\Query;
 use andy87\sdk\client\core\Request;
 use andy87\sdk\client\core\Response;
-use Exception;
+use andy87\sdk\client\base\Operator;
+use andy87\sdk\client\helpers\Method;
 
 /**
  *  Класс CurlOperator
@@ -16,6 +19,12 @@ use Exception;
  */
 class CurlOperator extends Operator
 {
+    public array $options = [
+        CURLOPT_RETURNTRANSFER => true,
+    ];
+
+
+
     /**
      * Отправляет запрос к API.
      *
@@ -31,56 +40,100 @@ class CurlOperator extends Operator
 
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $query->getMethod());
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $query->getHeaders());
+        if ($curl === false) {
 
-        $url = $query->getEndpoint();
+            $error = 'Failed to initialize cURL session.';
 
-        switch ( $query->getMethod() ) {
-            case 'GET':
-                $data = $query->getData();
+            $this->errorHandler([
+                'method' => __METHOD__,
+                'message' => $error,
+            ]);
 
-                if ($data )
-                {
-                    $url .= ( str_contains($url, '?') ? '&' : '?' );
+            $response = new Response(0);
 
-                    if ( is_array($data) )
-                    {
-                        $url .= http_build_query($data);
+            $response->addError($error);
 
-                    } else if ( is_string($data) ) {
+        } else {
 
-                        $url .= $data;
-                    }
-                }
+            $this->handleData( $query );
 
-                break;
-            case 'POST':
-            case 'PUT':
-                curl_setopt($curl, CURLOPT_POST, true);
+            $this->options[CURLOPT_HTTPHEADER] = $query->getHeaders();
+            $this->options[CURLOPT_URL] = $query->getEndpoint();
 
-                $data = $query->getData();
+            curl_setopt_array($curl, $this->options);
 
-                if ( is_array($data) )
-                {
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+            $response = new Response(
+                curl_getinfo($curl, CURLINFO_HTTP_CODE) ?: 0,
+                curl_exec($curl) ?: null
+            );
 
-                } elseif ( is_string($data) ) {
+            $curlInfo = $this->handleCustomParams( $curl, $query );
 
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-                }
-                break;
-            case 'DELETE':
-                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
-                break;
-            default:
-                throw new Exception('Unsupported HTTP method: ' . $query->getMethod());
+            curl_close($curl);
+
+            $response->setCustomParams( $curlInfo );
         }
 
-        curl_setopt($curl, CURLOPT_URL, $url );
+        return $response;
+    }
 
-        if ( $params = $query->getParams() )
+    /**
+     * Установка данных запроса в зависимости от HTTP метода.
+     *
+     * @param Query $query
+     *
+     * @throws Exception
+     */
+    private function handleData( Query $query ): void
+    {
+        $method = $query->getMethod();
+
+        switch ( $method )
+        {
+            case Method::PUT:
+            case Method::POST:
+            case Method::PATCH:
+
+                $this->options[CURLOPT_POST] = true;
+
+                $data = $query->getData();
+
+                if ( is_array($data) || is_string($data))
+                {
+                    $data = is_array($data) ? http_build_query($data) : $data;
+                }
+
+                $this->options[CURLOPT_POSTFIELDS] = $data;
+
+                break;
+
+            case Method::DELETE:
+            default:
+                $this->errorHandler( [
+                    'method' => __METHOD__,
+                    'message' => 'Unsupported HTTP method: ' . $method,
+                ]);
+        }
+
+        if ( in_array( $method, [Method::PUT, Method::PATCH, Method::DELETE] ) )
+        {
+            $this->options[CURLOPT_CUSTOMREQUEST] = $method;
+        }
+    }
+
+    /**
+     * Обрабатывает пользовательские параметры.
+     *
+     * @param CurlHandle $curl
+     * @param Query $query
+     *
+     * @return array
+     *
+     * @throws Exception
+     */
+    private function handleCustomParams(CurlHandle $curl, Query $query): array
+    {
+        if ( $params = $query->getCustomParams() )
         {
             foreach ( $params as $key => $value )
             {
@@ -88,16 +141,6 @@ class CurlOperator extends Operator
             }
         }
 
-        $response = curl_exec($curl);
-
-        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
-        curl_close($curl);
-
-        $response = new Response( $statusCode, $response );
-
-        if ( $params ) $response->setParams( $params );
-
-        return $response;
+        return $params;
     }
 }

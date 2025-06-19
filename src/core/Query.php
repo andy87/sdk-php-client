@@ -2,6 +2,8 @@
 
 namespace andy87\sdk\client\core;
 
+use andy87\sdk\client\helpers\Method;
+
 /**
  * Класс Query
  *
@@ -11,29 +13,22 @@ namespace andy87\sdk\client\core;
  */
 class Query
 {
-    protected string $method;
-
-    protected string $endpoint;
-
-    protected array $headers = [];
-
-    protected mixed $data = null;
-
-    protected ?array $params = null;
-
-
     /**
      * Конструктор класса Query
      *
      * @param string $method Метод HTTP запроса (GET, POST, PUT, DELETE и т.д.)
      * @param string $endpoint URL-адрес конечной точки API, к которой будет отправлен запрос
+     * @param array $data Данные запроса
+     * @param array $headers Заголовки запроса
+     * @param array $customParams Дополнительные параметры запроса
      */
-    public function __construct( string $method, string $endpoint)
-    {
-        $this->method = $method;
-
-        $this->endpoint = $endpoint;
-    }
+    public function __construct(
+        private string $method,
+        private string $endpoint,
+        private array $data = [],
+        private array $headers = [],
+        private array $customParams = [],
+    ){}
 
     /**
      * Возвращает метод HTTP запроса
@@ -52,7 +47,23 @@ class Query
      */
     public function getEndpoint(): string
     {
-        return $this->endpoint;
+        $url = $this->endpoint;
+
+        $url = rtrim($url, '?&');
+
+        if ( $this->method === Method::GET )
+        {
+            $data = $this->getData();
+
+            if ( !empty($data) )
+            {
+                $url .= ( str_contains($url, '?') ? '&' : '?' );
+
+                $url .= http_build_query($data);
+            }
+        }
+
+        return $url;
     }
 
     /**
@@ -66,33 +77,13 @@ class Query
     }
 
     /**
-     * Устанавливает заголовки запроса
-     *
-     * @param array $headers Ассоциативный массив заголовков
-     */
-    public function setHeaders( array $headers ): void
-    {
-        $this->headers = $headers;
-    }
-
-    /**
      * Возвращает данные запроса
      *
-     * @return mixed
+     * @return array
      */
-    public function getData(): mixed
+    public function getData(): array
     {
         return $this->data;
-    }
-
-    /**
-     * Устанавливает данные запроса
-     *
-     * @param mixed $data Данные запроса (могут быть в формате JSON, массиве и т.д.)
-     */
-    public function setData( mixed $data ): void
-    {
-        $this->data = $data;
     }
 
     /**
@@ -100,18 +91,8 @@ class Query
      *
      * @return array
      */
-    public function getParams(): array
+    public function getCustomParams(): array
     {
-        return $this->params;
-    }
-
-    /**
-     * Устанавливает параметры запроса
-     *
-     * @param array $params Ассоциативный массив параметров запроса
-     */
-    public function setParams( array $params ): void
-    {
-        $this->params = $params;
+        return $this->customParams;
     }
 }
