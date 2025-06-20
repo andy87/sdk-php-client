@@ -8,7 +8,7 @@ use andy87\sdk\client\base\Account;
  * Interface CacheInterface
  * Represents a cache interface for storing and retrieving data.
  *
- * @package andy87\sdk\client\base\interfaces
+ * @package src/base/interfaces
  */
 interface ClientInterface
 {

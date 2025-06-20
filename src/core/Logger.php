@@ -8,7 +8,7 @@ use andy87\sdk\client\base\interfaces\LoggerInterface;
  * Class Logger
  * Implements the LoggerInterface to provide logging functionality.
  *
- * @package andy87\sdk\client\core
+ * @package src/core
  */
 class Logger implements LoggerInterface
 {

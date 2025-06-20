@@ -5,7 +5,7 @@ namespace andy87\sdk\client\helpers;
 /**
  * Class ContentType
  *
- * @package sdk-php-client\src\helpers
+ * @package src/hepers
  */
 class ContentType
 {

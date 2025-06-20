@@ -10,46 +10,52 @@ use andy87\sdk\client\base\interfaces\PromptInterface;
  *
  * Представляет собой запрос к API, содержащий метод, путь, заголовки и другие параметры
  *
- * @package src\base
+ * @package src/base
  */
 abstract class Prompt implements PromptInterface
 {
     /**
-     * @var bool $isPrivate
      * Флаг, указывающий, является ли запрос приватным (требует авторизации).
+     *
+     * @var bool $isPrivate
      */
     protected bool $isPrivate = false;
 
     /**
-     * @var string $schema
      * Схема запроса, определяющая структуру и правила валидации.
+     *
+     * @var string $schema
      */
     protected string $schema;
 
 
     /**
-     * @var string $method
      * Метод HTTP запроса (GET, POST, PUT, DELETE и т.д.).
+     *
+     * @var string $method
      */
     protected string $method = Method::GET;
 
     /**
-     * @var string $path
      * Путь запроса, указывающий на конечную точку API.
+     *
+     * @var string $path
      */
     protected string $path;
 
     /**
-     * @var array $headers
      * Заголовки запроса, которые могут включать авторизационные токены и другие метаданные.
+     *
+     * @var array $headers
      */
     protected array $headers = [];
 
 
     /**
-     * @var ?string $contentType
      * Тип контента запроса, например, 'application/json'.
-     * Может быть null, если тип не задан.
+     *  Может быть null, если тип не задан.
+     *
+     * @var ?string $contentType
      */
     protected ?string $contentType = null;
 

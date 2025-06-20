@@ -10,13 +10,19 @@ use andy87\sdk\client\base\interfaces\OperatorInterface;
  *
  * Отправляет запросы к API.
  *
- * @package src\base
+ * @package src/base
  */
 abstract class Operator implements OperatorInterface
 {
+    /** @var Client $client Экземпляр клиента, используемый для отправки запросов к API. */
     protected Client $client;
 
+
+
     /**
+     * Конструктор класса Operator
+     * Инициализирует экземпляр клиента, который будет использоваться для отправки запросов к API.
+     *
      * @param Client $client
      */
     public function __construct( Client $client )

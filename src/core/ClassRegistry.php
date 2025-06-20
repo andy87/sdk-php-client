@@ -9,7 +9,6 @@ use andy87\sdk\client\base\Cache;
 use andy87\sdk\client\base\Schema;
 use andy87\sdk\client\base\Account;
 use andy87\sdk\client\base\Operator;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use andy87\sdk\client\base\interfaces\TestInterface;
 use andy87\sdk\client\base\interfaces\CacheInterface;
@@ -25,7 +24,7 @@ use andy87\sdk\client\base\interfaces\OperatorInterface;
  *
  * Настройка используемых классов и интерфейсов в контейнере.
  *
- * @package andy87\sdk\client\core
+ * @package src/core
  */
 class ClassRegistry
 {
@@ -63,7 +62,9 @@ class ClassRegistry
      * Получает объект по ID из контейнера.
      *
      * @param string $id
-     * @return object|null
+     *
+     * @return ?object
+     *
      * @throws Exception
      */
     public function getClass(string $id): ?string

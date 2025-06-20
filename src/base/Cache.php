@@ -9,15 +9,11 @@ use andy87\sdk\client\base\interfaces\CacheInterface;
  *
  * Родительский класс для пользовательских реализаций класса содержащего логику кэширования данных.
  *
- * @package src\base
+ * @package src/base
  */
 abstract class Cache implements CacheInterface
 {
-    /**
-     * Массив для хранения данных.
-     *
-     * @var array $data
-     */
+    /** @var array $data Массив для хранения данных. */
     protected array $data = [];
 
 

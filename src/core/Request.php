@@ -12,7 +12,7 @@ use andy87\sdk\client\base\interfaces\RequestInterface;
  * Содержет данные запроса и промпт, используемые для отправки запроса к API.
  * Реализует интерфейс RequestInterface.
  *
- * @package src\core
+ * @package src/core
  */
 class Request implements RequestInterface
 {

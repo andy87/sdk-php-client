@@ -12,7 +12,7 @@ use andy87\sdk\client\base\interfaces\OperatorInterface;
  * Class Modules
  * Содержит модули, используемые в клиенте.
  *
- * @package andy87\sdk\client\base
+ * @package src/core
  */
 class Modules
 {

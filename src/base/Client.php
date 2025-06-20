@@ -14,7 +14,7 @@ use andy87\sdk\client\base\interfaces\RequestInterface;
  * Класс Client
  *  Базовый класс клиента содержащий методы для работы клиента.
  *
- * @package src\base
+ * @package src/base
  */
 abstract class Client implements ClientInterface
 {
@@ -104,7 +104,7 @@ abstract class Client implements ClientInterface
     }
 
     /**
-     * Метод для запуска тестов в клиенте.
+     * Запуск тестов в клиенте.
      */
     public function test(): void
     {
@@ -114,10 +114,8 @@ abstract class Client implements ClientInterface
         }
     }
 
-
-
     /**
-     * Метод для добавления данных требуемых для авторизации.
+     * Добавление данных требуемых для авторизации.
      */
     public function prepareAuthentication( RequestInterface $request ): void
     {
@@ -125,7 +123,7 @@ abstract class Client implements ClientInterface
     }
 
     /**
-     * Метод для авторизации пользователя.
+     * Авторизация пользователя.
      *
      * @param Account $account
      *
@@ -137,21 +135,29 @@ abstract class Client implements ClientInterface
         return true;
     }
 
-    public function errorHandler( string|array $data ): void
-    {
-        // Логика обработки ошибок
-    }
-
     /**
-     * Метод проверяет есть ли ошибки в ответе, решаемая повторной авторизацией
+     * Проверка есть ли ошибки в ответе, решаемые повторной авторизацией
      *
      * @param Response $response
      *
      * @return bool
      */
-    public function isAuthorizationError( Response $response ): bool
+    public function isTokenInvalid(Response $response ): bool
     {
         // Логика проверки ошибок авторизации
         return false;
     }
+
+    /**
+     * Обработчик ошибок клиента.
+     *
+     * @param string|array $data
+     *
+     * @return void
+     */
+    public function errorHandler( string|array $data ): void
+    {
+        // Логика обработки ошибок
+    }
+
 }

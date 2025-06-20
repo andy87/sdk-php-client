@@ -9,7 +9,7 @@ use andy87\sdk\client\base\interfaces\AccountInterface;
 /**
  * BКонфигурация базового клиента API.
  *
- * @package src\base
+ * @package src/base
  */
 abstract class Config
 {

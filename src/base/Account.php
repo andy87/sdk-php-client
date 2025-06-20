@@ -9,7 +9,7 @@ use andy87\sdk\client\base\interfaces\AccountInterface;
  *
  * Робительский класс для представления данных аккаунта используемых для аутентификации и авторизации в API.
  *
- * @package src\base
+ * @package src/base
  */
 abstract class Account implements AccountInterface
 {

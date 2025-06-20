@@ -8,7 +8,7 @@ use andy87\sdk\client\base\Account;
  * Интерфейс CacheInterface
  *
  *
- * @package src/interfaces
+ * @package src/base/interfaces
  */
 interface CacheInterface
 {

@@ -6,7 +6,7 @@ namespace andy87\sdk\client\core;
  * Class Response
  * Represents the response from an API request.
  *
- * @package src\base
+ * @package src/core
  */
 class Response
 {

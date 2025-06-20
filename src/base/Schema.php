@@ -13,8 +13,8 @@ use andy87\sdk\client\base\interfaces\SchemaInterface;
  */
 abstract class Schema implements SchemaInterface
 {
-    public const ERROR_PROPERTY_NOT_FOUND = 'Property "%s" not found in schema "%s".';
-    public const ERROR_CLASS_NOT_FOUND = 'Class "%s" not found for property "%s" in schema "%s".';
+    protected const ERROR_PROPERTY_NOT_FOUND = 'Property "%s" not found in schema "%s".';
+    protected const ERROR_CLASS_NOT_FOUND = 'Class "%s" not found for property "%s" in schema "%s".';
 
 
 

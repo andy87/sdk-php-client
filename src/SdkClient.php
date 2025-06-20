@@ -2,7 +2,6 @@
 
 namespace andy87\sdk\client;
 
-
 use Exception;
 use andy87\sdk\client\base\Client;
 use andy87\sdk\client\base\Prompt;
@@ -16,7 +15,7 @@ use andy87\sdk\client\base\interfaces\RequestInterface;
  *
  * SDK клиента, представляющий слой который содержет логику тправки запросов к API и обрабатку ответа.
  *
- * @package src
+ * @package src/
  */
 abstract class SdkClient extends Client
 {
@@ -86,7 +85,7 @@ abstract class SdkClient extends Client
      */
     private function handleResponse( Prompt $prompt, Response $response ): Response
     {
-        if ( $this->isAuthorizationError( $response ) )
+        if ( $this->isTokenInvalid( $response ) )
         {
             $account = $this->config->getAccount();
 
@@ -96,7 +95,7 @@ abstract class SdkClient extends Client
 
                 $response = $this->modules->operator->sendRequest( $request );
 
-                if ( $this->isAuthorizationError( $response ) )
+                if ( $this->isTokenInvalid( $response ) )
                 {
                     $this->errorHandler([
                         'method' => __METHOD__,

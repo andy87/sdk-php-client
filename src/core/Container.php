@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
  *
  * Контейнер для хранения зависимостей, таких как запросы, ответы, операторы, логгеры и кэш.
  *
- * @package andy87\sdk\client\core
+ * @package src/core
  */
 class Container implements ContainerInterface
 {

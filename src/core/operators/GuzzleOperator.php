@@ -2,16 +2,16 @@
 
 namespace andy87\sdk\client\core\operators;
 
+use andy87\sdk\client\core\Request;
+use andy87\sdk\client\core\Response;
 use andy87\sdk\client\base\Operator;
-use andy87\sdk\client\base\Request;
-use andy87\sdk\client\base\Response;
 
 /**
  * Класс CurlOperator
  *
  * Отправляет запросы к API с использованием Guzzle HTTP Client.
  *
- * @package src\operators
+ * @package src/core/operators
  */
 class GuzzleOperator extends Operator
 {

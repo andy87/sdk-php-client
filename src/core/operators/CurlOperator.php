@@ -15,7 +15,7 @@ use andy87\sdk\client\helpers\Method;
  *
  * Отправляет запросы к API с использованием cURL.
  *
- * @package src\operators
+ * @package src/core/operators
  */
 class CurlOperator extends Operator
 {

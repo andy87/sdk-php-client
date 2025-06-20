@@ -5,7 +5,7 @@ namespace andy87\sdk\client\base\interfaces;
 /**
  * Интерфйс PromptInterface
  *
- * @package src/interfaces
+ * @package src/base/interfaces
  */
 interface PromptInterface
 {
