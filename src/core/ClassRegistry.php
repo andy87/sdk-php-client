@@ -3,13 +3,14 @@
 namespace andy87\sdk\client\core;
 
 use Exception;
-use andy87\sdk\client\base\Test;
 use andy87\sdk\client\SdkClient;
-use andy87\sdk\client\base\Cache;
-use andy87\sdk\client\base\Schema;
-use andy87\sdk\client\base\Account;
-use andy87\sdk\client\base\Operator;
-use Psr\Http\Message\ResponseInterface;
+use andy87\sdk\client\base\BaseTest;
+use andy87\sdk\client\base\BaseCache;
+use andy87\sdk\client\base\BaseSchema;
+use andy87\sdk\client\base\BaseAccount;
+use andy87\sdk\client\base\BaseOperator;
+use andy87\sdk\client\core\transport\Request;
+use andy87\sdk\client\core\transport\Response;
 use andy87\sdk\client\base\interfaces\TestInterface;
 use andy87\sdk\client\base\interfaces\CacheInterface;
 use andy87\sdk\client\base\interfaces\SchemaInterface;
@@ -18,6 +19,7 @@ use andy87\sdk\client\base\interfaces\LoggerInterface;
 use andy87\sdk\client\base\interfaces\AccountInterface;
 use andy87\sdk\client\base\interfaces\RequestInterface;
 use andy87\sdk\client\base\interfaces\OperatorInterface;
+use andy87\sdk\client\base\interfaces\ResponseInterface;
 
 /**
  * Class Container
@@ -32,15 +34,15 @@ class ClassRegistry
      * @var array $mapping Массив для хранения классов и их соответствующих ID
      */
     public const DEFAULT = [
-        TestInterface::class => Test::class,
-        CacheInterface::class => Cache::class,
+        TestInterface::class => BaseTest::class,
+        CacheInterface::class => BaseCache::class,
         LoggerInterface::class => Logger::class,
-        SchemaInterface::class => Schema::class,
+        SchemaInterface::class => BaseSchema::class,
         ClientInterface::class => SdkClient::class,
-        AccountInterface::class => Account::class,
+        AccountInterface::class => BaseAccount::class,
         RequestInterface::class => Request::class,
         ResponseInterface::class => Response::class,
-        OperatorInterface::class => Operator::class,
+        OperatorInterface::class => BaseOperator::class,
     ];
 
     private array $mapping;

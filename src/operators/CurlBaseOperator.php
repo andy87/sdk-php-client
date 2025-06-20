@@ -1,14 +1,14 @@
 <?php
 
-namespace andy87\sdk\client\core\operators;
+namespace andy87\sdk\client\operators;
 
 use Exception;
 use CurlHandle;
-use andy87\sdk\client\core\Query;
-use andy87\sdk\client\core\Request;
-use andy87\sdk\client\core\Response;
-use andy87\sdk\client\base\Operator;
 use andy87\sdk\client\helpers\Method;
+use andy87\sdk\client\base\BaseOperator;
+use andy87\sdk\client\core\transport\Query;
+use andy87\sdk\client\core\transport\Request;
+use andy87\sdk\client\core\transport\Response;
 
 /**
  *  Класс CurlOperator
@@ -17,7 +17,7 @@ use andy87\sdk\client\helpers\Method;
  *
  * @package src/core/operators
  */
-class CurlOperator extends Operator
+class CurlBaseOperator extends BaseOperator
 {
     public array $options = [
         CURLOPT_RETURNTRANSFER => true,

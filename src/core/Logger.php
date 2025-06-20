@@ -2,7 +2,7 @@
 
 namespace andy87\sdk\client\core;
 
-use andy87\sdk\client\base\interfaces\LoggerInterface;
+use andy87\sdk\client\base\BaseLogger;
 
 /**
  * Class Logger
@@ -10,9 +10,9 @@ use andy87\sdk\client\base\interfaces\LoggerInterface;
  *
  * @package src/core
  */
-class Logger implements LoggerInterface
+class Logger extends BaseLogger
 {
-    public function write(mixed $data)
+    public function error( string|array $data ): void
     {
         // TODO: Implement write() method.
     }

@@ -3,11 +3,11 @@
 namespace andy87\sdk\client;
 
 use Exception;
-use andy87\sdk\client\base\Client;
-use andy87\sdk\client\base\Prompt;
-use andy87\sdk\client\base\Schema;
-use andy87\sdk\client\core\Request;
-use andy87\sdk\client\core\Response;
+use andy87\sdk\client\base\BaseClient;
+use andy87\sdk\client\base\BasePrompt;
+use andy87\sdk\client\base\BaseSchema;
+use andy87\sdk\client\core\transport\Request;
+use andy87\sdk\client\core\transport\Response;
 use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
@@ -17,18 +17,18 @@ use andy87\sdk\client\base\interfaces\RequestInterface;
  *
  * @package src/
  */
-abstract class SdkClient extends Client
+abstract class SdkClient extends BaseClient
 {
     /**
      * Отправляет запрос к API и возвращает схему ответа.
      *
-     * @param Prompt $prompt
+     * @param BasePrompt $prompt
      *
-     * @return ?Schema
+     * @return ?BaseSchema
      *
      * @throws Exception
      */
-    protected function send( Prompt $prompt ): ?Schema
+    public function send( BasePrompt $prompt ): ?BaseSchema
     {
         $request = $this->constructRequest( $prompt );
 
@@ -38,10 +38,12 @@ abstract class SdkClient extends Client
             'method' => __METHOD__,
             'prompt' => $prompt,
             'request' => $request,
-            'response' => $response
+            'send response' => $response
         ];
 
         $response = $this->handleResponse( $prompt, $response );
+
+        $log['handleResponse'] = $response;
 
         if ( $response->isOk() )
         {
@@ -78,12 +80,14 @@ abstract class SdkClient extends Client
     /**
      * Проверяет, является ли ответ ошибкой авторизации.
      *
-     * @param Prompt $prompt Объект запроса, содержащий информацию о запросе.
+     * @param BasePrompt $prompt Объект запроса, содержащий информацию о запросе.
      * @param Response $response Ответ от API, который нужно проверить на наличие ошибок авторизации.
      *
      * @return Response
+     *
+     * @throws Exception
      */
-    private function handleResponse( Prompt $prompt, Response $response ): Response
+    private function handleResponse(BasePrompt $prompt, Response $response ): Response
     {
         if ( $this->isTokenInvalid( $response ) )
         {
@@ -112,18 +116,20 @@ abstract class SdkClient extends Client
     }
 
     /**
-     * @param Prompt $prompt
+     * @param BasePrompt $prompt
      *
      * @return Request
      *
      * @throws Exception
      */
-    private function constructRequest( Prompt $prompt ): Request
+    private function constructRequest(BasePrompt $prompt ): Request
     {
         $requestClassName = $this->modules->container->getClassRegistry( RequestInterface::class );
 
         /** @var Request $request */
         $request = new $requestClassName( $this, $prompt );
+
+        $this->prepareAuthentication( $request );
 
         return $request;
     }
@@ -132,9 +138,9 @@ abstract class SdkClient extends Client
      * @param Request $request
      * @param Response $response
      *
-     * @return ?Schema
+     * @return ?BaseSchema
      */
-    private function constructSchema( Request $request, Response $response ): ?Schema
+    private function constructSchema( Request $request, Response $response ): ?BaseSchema
     {
         $schemaClassName = $request->getPrompt()->getSchema();
 
@@ -142,7 +148,7 @@ abstract class SdkClient extends Client
         {
             if ( $result = $response->getResult() )
             {
-                /** @var Schema $schema */
+                /** @var BaseSchema $schema */
                 $schema = new $schemaClassName( $result );
 
                 return $schema;

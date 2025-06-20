@@ -3,7 +3,6 @@
 namespace andy87\sdk\client\core;
 
 use Exception;
-use andy87\sdk\client\base\Client;
 use andy87\sdk\client\base\interfaces\TestInterface;
 use andy87\sdk\client\base\interfaces\CacheInterface;
 use andy87\sdk\client\base\interfaces\OperatorInterface;

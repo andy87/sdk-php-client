@@ -1,9 +1,10 @@
 <?php
 
-namespace andy87\sdk\client\core;
+namespace andy87\sdk\client\core\transport;
 
-use andy87\sdk\client\base\Client;
-use andy87\sdk\client\base\Prompt;
+use Exception;
+use andy87\sdk\client\base\BaseClient;
+use andy87\sdk\client\base\BasePrompt;
 use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
@@ -12,25 +13,26 @@ use andy87\sdk\client\base\interfaces\RequestInterface;
  * Содержет данные запроса и промпт, используемые для отправки запроса к API.
  * Реализует интерфейс RequestInterface.
  *
- * @package src/core
+ * @package src/core/transport
  */
 class Request implements RequestInterface
 {
-    protected Client $client;
+    protected BaseClient $client;
 
-    protected Prompt $prompt;
+    protected BasePrompt $prompt;
 
     protected Query $query;
-
 
 
     /**
      * Конструктор класса Request.
      *
-     * @param Client $client
-     * @param Prompt $prompt
+     * @param BaseClient $client
+     * @param BasePrompt $prompt
+     *
+     * @throws Exception
      */
-    public function __construct( Client $client, Prompt $prompt )
+    public function __construct(BaseClient $client, BasePrompt $prompt )
     {
         $this->client = $client;
 
@@ -41,20 +43,38 @@ class Request implements RequestInterface
 
     /**
      * Initializes the query based on the provided prompt.
+     *
+     * @throws Exception
      */
     public function setupQuery(): void
     {
-        $queryClass = $this->client->modules->container->getClassRegistry(Query::class );
-
+        $path = $this->prompt->getPath();
         $method = $this->prompt->getMethod();
-
-        $endpoint = $this->client->constructEndpoint( $this->prompt->getPath() );
-
         $data = $this->prompt->release();
-
         $headers = $this->getHeaders();
 
-        $this->query = new $queryClass( $method, $endpoint, $data, $headers );
+        $endpoint = $this->client->constructEndpoint( $path );
+
+        $this->query =  $this->constructQuery( $method, $endpoint, $data, $headers);
+    }
+
+    /**
+     * Конструктор объекта Query.
+     *
+     * @param string $method
+     * @param string $endpoint
+     * @param array $data
+     * @param array $headers
+     *
+     * @return Query
+     *
+     * @throws Exception
+     */
+    private function constructQuery( string $method, string $endpoint, array $data, array $headers ): Query
+    {
+        $queryClass = $this->client->modules->container->getClassRegistry( Query::class );
+
+        return new $queryClass( $method, $endpoint, $data, $headers );
     }
 
     /**
@@ -76,9 +96,9 @@ class Request implements RequestInterface
     /**
      * Возвращает prompt запроса.
      *
-     * @return Prompt
+     * @return BasePrompt
      */
-    public function getPrompt(): Prompt
+    public function getPrompt(): BasePrompt
     {
         return $this->prompt;
     }

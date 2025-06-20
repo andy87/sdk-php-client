@@ -11,7 +11,7 @@ use andy87\sdk\client\base\interfaces\CacheInterface;
  *
  * @package src/base
  */
-abstract class Cache implements CacheInterface
+abstract class BaseCache implements CacheInterface
 {
     /** @var array $data Массив для хранения данных. */
     protected array $data = [];
@@ -21,10 +21,10 @@ abstract class Cache implements CacheInterface
     /**
      * Конструктор класса Cache.
      *
-     * @param Account $account
+     * @param BaseAccount $account
      * @param array $data
      */
-    public function __construct( Account $account, array $data= [] )
+    public function __construct(BaseAccount $account, array $data= [] )
     {
         if ( !empty( $data ) )
         {
@@ -37,19 +37,19 @@ abstract class Cache implements CacheInterface
     /**
      * Записывает данные в кэш для указанного аккаунта.
      *
-     * @param Account $account
+     * @param BaseAccount $account
      * @param array $data
      *
      * @return bool
      */
-    abstract public function setData( Account $account, array $data ): bool;
+    abstract public function setData(BaseAccount $account, array $data ): bool;
 
     /**
      * Получает данные из кэша для указанного аккаунта.
      *
-     * @param Account $account
+     * @param BaseAccount $account
      *
      * @return ?array
      */
-    abstract public function getData( Account $account ): ?array;
+    abstract public function getData( BaseAccount $account ): ?array;
 }

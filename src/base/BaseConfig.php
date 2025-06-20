@@ -11,7 +11,7 @@ use andy87\sdk\client\base\interfaces\AccountInterface;
  *
  * @package src/base
  */
-abstract class Config
+abstract class BaseConfig
 {
     /** @var string $port Базовый Port для HTTP запросов к API (http\https) */
     public string $port = Port::HTTPS;
@@ -39,7 +39,7 @@ abstract class Config
 
     /** Конструктор класса Config.
      *
-     * @param Account $account Аккаунт, связанный с конфигурацией.
+     * @param BaseAccount $account Аккаунт, связанный с конфигурацией.
      * @param array $classes Список конфигурации контейнера
      */
     public function __construct( AccountInterface $account, array $classes = ClassRegistry::DEFAULT )
@@ -52,7 +52,7 @@ abstract class Config
     /**
      * Получение аккаунта.
      *
-     * @return Account Аккаунт, связанный с конфигурацией.
+     * @return BaseAccount Аккаунт, связанный с конфигурацией.
      */
     public function getAccount(): AccountInterface
     {

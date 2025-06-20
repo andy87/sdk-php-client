@@ -11,7 +11,7 @@ use andy87\sdk\client\base\interfaces\AccountInterface;
  *
  * @package src/base
  */
-abstract class Account implements AccountInterface
+abstract class BaseAccount implements AccountInterface
 {
 
 }

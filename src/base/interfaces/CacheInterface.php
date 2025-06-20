@@ -2,7 +2,7 @@
 
 namespace andy87\sdk\client\base\interfaces;
 
-use andy87\sdk\client\base\Account;
+use andy87\sdk\client\base\BaseAccount;
 
 /**
  * Интерфейс CacheInterface
@@ -12,7 +12,7 @@ use andy87\sdk\client\base\Account;
  */
 interface CacheInterface
 {
-    public function setData( Account $account, array $data ): bool;
+    public function setData(BaseAccount $account, array $data ): bool;
 
-    public function getData( Account $account ): ?array;
+    public function getData(BaseAccount $account ): ?array;
 }

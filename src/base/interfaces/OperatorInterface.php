@@ -2,8 +2,8 @@
 
 namespace andy87\sdk\client\base\interfaces;
 
-use andy87\sdk\client\core\Request;
-use andy87\sdk\client\core\Response;
+use andy87\sdk\client\core\transport\Request;
+use andy87\sdk\client\core\transport\Response;
 
 /**
  * Интерфейс для отправки запросов к API.

@@ -1,6 +1,6 @@
 <?php
 
-namespace andy87\sdk\client\core;
+namespace andy87\sdk\client\core\transport;
 
 use andy87\sdk\client\helpers\Method;
 
@@ -9,7 +9,7 @@ use andy87\sdk\client\helpers\Method;
  *
  * Содержит информацию о HTTP запросе
  *
- * @package src/base
+ * @package src/core/transport
  */
 class Query
 {

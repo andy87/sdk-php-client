@@ -1,15 +1,22 @@
 <?php
 
-namespace andy87\sdk\client\core;
+namespace andy87\sdk\client\core\transport;
+
+use andy87\sdk\client\base\interfaces\ResponseInterface;
 
 /**
  * Class Response
  * Represents the response from an API request.
  *
- * @package src/core
+ * @package src/core/transport
  */
-class Response
+class Response implements ResponseInterface
 {
+    /**
+     * @var Request $request Запрос, на который был получен ответ
+     */
+    protected Request $request;
+
     /**
      * @var int|null $statusCode Код статуса ответа
      */

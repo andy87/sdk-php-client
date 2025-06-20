@@ -11,7 +11,7 @@ use andy87\sdk\client\base\interfaces\SchemaInterface;
  *
  * @package src/base
  */
-abstract class Schema implements SchemaInterface
+abstract class BaseSchema implements SchemaInterface
 {
     protected const ERROR_PROPERTY_NOT_FOUND = 'Property "%s" not found in schema "%s".';
     protected const ERROR_CLASS_NOT_FOUND = 'Class "%s" not found for property "%s" in schema "%s".';
@@ -97,7 +97,7 @@ abstract class Schema implements SchemaInterface
     /**
      * {@inheritDoc}
      */
-    public function validate( Prompt $prompt ): bool
+    public function validate(BasePrompt $prompt ): bool
     {
         return true;
     }

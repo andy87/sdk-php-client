@@ -2,7 +2,8 @@
 
 namespace andy87\sdk\client\base\interfaces;
 
-use andy87\sdk\client\base\Account;
+use andy87\sdk\client\base\BaseAccount;
+use andy87\sdk\client\core\transport\Response;
 
 /**
  * Interface CacheInterface
@@ -32,7 +33,29 @@ interface ClientInterface
      */
     public function constructEndpoint( string|int $path ): string;
 
-    public function authorization( Account $account ): bool;
+    /**
+     * Авторизация в API партнера
+     *
+     * @param string|int $path
+     * @param array $params
+     *
+     * @return Response
+     */
+    public function authorization( BaseAccount $account ): bool;
 
+    /**
+     * Проверка отсутствия ошибок валидности токена
+     *
+     * @param Response $response
+     *
+     * @return Response
+     */
+    public function isTokenInvalid( Response $response ): bool;
+
+    /**
+     * Обработчик ошибок
+     *
+     * @param string|array $data
+     */
     public function errorHandler( string|array $data ): void;
 }

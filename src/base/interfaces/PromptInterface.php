@@ -20,4 +20,6 @@ interface PromptInterface
     public function isPrivate(): bool;
 
     public function getHeaders(): array;
+
+    public function release(): ?array;
 }

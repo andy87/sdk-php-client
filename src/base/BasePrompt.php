@@ -12,7 +12,7 @@ use andy87\sdk\client\base\interfaces\PromptInterface;
  *
  * @package src/base
  */
-abstract class Prompt implements PromptInterface
+abstract class BasePrompt implements PromptInterface
 {
     /**
      * Флаг, указывающий, является ли запрос приватным (требует авторизации).

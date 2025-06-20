@@ -10,5 +10,5 @@ namespace andy87\sdk\client\base\interfaces;
  */
 interface LoggerInterface
 {
-    public function write( mixed $data );
+    public function error( string|array $data ): void;
 }
