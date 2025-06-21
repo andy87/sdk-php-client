@@ -2,8 +2,6 @@
 
 namespace andy87\sdk\client\base;
 
-use andy87\sdk\client\base\interfaces\AccountInterface;
-
 /**
  * Класс Account
  *
@@ -11,7 +9,7 @@ use andy87\sdk\client\base\interfaces\AccountInterface;
  *
  * @package src/base
  */
-abstract class BaseAccount implements AccountInterface
+abstract class AbstractAccount
 {
 
 }

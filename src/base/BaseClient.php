@@ -125,11 +125,11 @@ abstract class BaseClient implements ClientInterface
     /**
      * Авторизация пользователя.
      *
-     * @param BaseAccount $account
+     * @param AbstractAccount $account
      *
      * @return bool
      */
-    abstract public function authorization(BaseAccount $account ): bool;
+    abstract public function authorization(AbstractAccount $account ): bool;
 
     /**
      * Проверка есть ли ошибки в ответе, решаемые повторной авторизацией

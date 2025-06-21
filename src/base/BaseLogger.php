@@ -12,5 +12,11 @@ use andy87\sdk\client\base\interfaces\LoggerInterface;
  */
 abstract class BaseLogger implements LoggerInterface
 {
-    abstract public function error( string|array $data ): void;
+    /**
+     * 
+     * @param string|array $data
+     *
+     * @return void
+     */
+    abstract public function errorHandler( string|array $data ): void;
 }

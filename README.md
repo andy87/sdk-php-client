@@ -14,7 +14,7 @@ composer require andy87/sdk-php-client
 
 ```php
 
-class AvitoAccount extends \andy87\sdk\client\base\BaseAccount{
+class AvitoAccount extends \andy87\sdk\client\base\AbstractAccount{
 
     public string $clientId;
     

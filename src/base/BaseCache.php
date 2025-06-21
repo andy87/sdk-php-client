@@ -2,8 +2,6 @@
 
 namespace andy87\sdk\client\base;
 
-use andy87\sdk\client\base\interfaces\CacheInterface;
-
 /**
  * Класс Cache
  *
@@ -11,7 +9,7 @@ use andy87\sdk\client\base\interfaces\CacheInterface;
  *
  * @package src/base
  */
-abstract class BaseCache implements CacheInterface
+abstract class BaseCache
 {
     /** @var array $data Массив для хранения данных. */
     protected array $data = [];
@@ -21,10 +19,10 @@ abstract class BaseCache implements CacheInterface
     /**
      * Конструктор класса Cache.
      *
-     * @param BaseAccount $account
+     * @param AbstractAccount $account
      * @param array $data
      */
-    public function __construct(BaseAccount $account, array $data= [] )
+    public function __construct(AbstractAccount $account, array $data= [] )
     {
         if ( !empty( $data ) )
         {
@@ -37,19 +35,19 @@ abstract class BaseCache implements CacheInterface
     /**
      * Записывает данные в кэш для указанного аккаунта.
      *
-     * @param BaseAccount $account
+     * @param AbstractAccount $account
      * @param array $data
      *
      * @return bool
      */
-    abstract public function setData(BaseAccount $account, array $data ): bool;
+    abstract public function setData(AbstractAccount $account, array $data ): bool;
 
     /**
      * Получает данные из кэша для указанного аккаунта.
      *
-     * @param BaseAccount $account
+     * @param AbstractAccount $account
      *
      * @return ?array
      */
-    abstract public function getData( BaseAccount $account ): ?array;
+    abstract public function getData(AbstractAccount $account ): ?array;
 }

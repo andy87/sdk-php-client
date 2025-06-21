@@ -4,7 +4,6 @@ namespace andy87\sdk\client\base;
 
 use andy87\sdk\client\helpers\Port;
 use andy87\sdk\client\core\ClassRegistry;
-use andy87\sdk\client\base\interfaces\AccountInterface;
 
 /**
  * BКонфигурация базового клиента API.
@@ -29,8 +28,8 @@ abstract class BaseConfig
     public array $headers = [];
 
 
-    /** @var AccountInterface $account */
-    public AccountInterface $account;
+    /** @var AbstractAccount $account */
+    public AbstractAccount $account;
 
     /** @var array $classes Контейнер для хранения дополнительных данных */
     public array $classes = [];
@@ -39,10 +38,10 @@ abstract class BaseConfig
 
     /** Конструктор класса Config.
      *
-     * @param BaseAccount $account Аккаунт, связанный с конфигурацией.
+     * @param AbstractAccount $account Аккаунт, связанный с конфигурацией.
      * @param array $classes Список конфигурации контейнера
      */
-    public function __construct( AccountInterface $account, array $classes = ClassRegistry::DEFAULT )
+    public function __construct( AbstractAccount $account, array $classes = ClassRegistry::DEFAULT )
     {
         $this->account = $account;
 
@@ -52,9 +51,9 @@ abstract class BaseConfig
     /**
      * Получение аккаунта.
      *
-     * @return BaseAccount Аккаунт, связанный с конфигурацией.
+     * @return AbstractAccount Аккаунт, связанный с конфигурацией.
      */
-    public function getAccount(): AccountInterface
+    public function getAccount(): AbstractAccount
     {
         return $this->account;
     }

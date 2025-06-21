@@ -10,5 +10,5 @@ namespace andy87\sdk\client\base\interfaces;
  */
 interface LoggerInterface
 {
-    public function error( string|array $data ): void;
+    public function errorHandler( string|array $data ): void;
 }
