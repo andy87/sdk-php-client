@@ -1,10 +1,11 @@
 <?php
 
-namespace andy87\sdk\client\base;
+namespace andy87\sdk\client\core;
 
 use Exception;
 use andy87\sdk\client\SdkClient;
-use andy87\sdk\client\base\interfaces\TestInterface;
+use andy87\sdk\client\base\components\Prompt;
+use andy87\sdk\client\base\components\Schema;
 
 /**
  * Class Response
@@ -12,7 +13,7 @@ use andy87\sdk\client\base\interfaces\TestInterface;
  *
  * @package src/base
  */
-abstract class BaseTest implements TestInterface
+class Test
 {
     /**
      *  Конструктор класса SdkClientTest.
@@ -32,10 +33,10 @@ abstract class BaseTest implements TestInterface
      */
     public function run( string $promptClass ): bool
     {
-        /** @var BasePrompt $promptClass */
+        /** @var Prompt $promptClass */
         $prompt = new $promptClass();
 
-        /** @var BaseSchema $schema */
+        /** @var Schema $schema */
         $schema = $this->client->send( $prompt );
 
         return $schema->validate( $prompt ) ?? false;

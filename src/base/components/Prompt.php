@@ -1,9 +1,8 @@
 <?php
 
-namespace andy87\sdk\client\base;
+namespace andy87\sdk\client\base\components;
 
 use andy87\sdk\client\helpers\Method;
-use andy87\sdk\client\base\interfaces\PromptInterface;
 
 /**
  * Класс Prompt
@@ -12,7 +11,7 @@ use andy87\sdk\client\base\interfaces\PromptInterface;
  *
  * @package src/base
  */
-abstract class BasePrompt implements PromptInterface
+abstract class Prompt
 {
     /**
      * Флаг, указывающий, является ли запрос приватным (требует авторизации).

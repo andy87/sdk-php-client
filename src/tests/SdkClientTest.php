@@ -3,6 +3,7 @@
 namespace andy87\sdk\client\tests;
 
 use andy87\sdk\client\SdkClient;
+use Exception;
 
 /**
  * Класс SdkClientTest.
@@ -13,7 +14,14 @@ use andy87\sdk\client\SdkClient;
  */
 abstract class SdkClientTest
 {
+    /**
+     * Класс, который будет использоваться для создания промпта.
+     *
+     * @var string
+     */
     public string $promptClass;
+
+
 
     /**
      *  Конструктор класса SdkClientTest.
@@ -28,6 +36,8 @@ abstract class SdkClientTest
      * Запускает тесты для проверки работы клиента SDK.
      *
      * @return void
+     *
+     * @throws Exception
      */
     public function run(): void
     {

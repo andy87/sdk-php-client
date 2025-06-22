@@ -4,13 +4,13 @@ namespace andy87\sdk\client\core;
 
 use Exception;
 use andy87\sdk\client\SdkClient;
-use andy87\sdk\client\base\BaseTest;
-use andy87\sdk\client\base\BaseCache;
-use andy87\sdk\client\base\BaseSchema;
-use andy87\sdk\client\base\BaseOperator;
-use andy87\sdk\client\base\AbstractAccount;
+use andy87\sdk\client\base\components\Schema;
 use andy87\sdk\client\core\transport\Request;
 use andy87\sdk\client\core\transport\Response;
+use andy87\sdk\client\base\components\Account;
+use andy87\sdk\client\base\modules\AbstractCache;
+use andy87\sdk\client\base\modules\AbstractLogger;
+use andy87\sdk\client\base\modules\AbstractOperator;
 use andy87\sdk\client\base\interfaces\ClientInterface;
 
 /**
@@ -23,33 +23,39 @@ use andy87\sdk\client\base\interfaces\ClientInterface;
 class ClassRegistry
 {
     /**
-     * @var array $mapping Массив для хранения классов и их соответствующих ID
+     * @var array Массив для хранения классов и их соответствующих ID
      */
-    public const DEFAULT = [
-        ClientInterface::TEST => BaseTest::class,
-        ClientInterface::CACHE => BaseCache::class,
-        ClientInterface::LOGGER => Logger::class,
-        ClientInterface::SCHEMA => BaseSchema::class,
+    public const MAP = [
+        ClientInterface::SCHEMA => Schema::class,
         ClientInterface::CLIENT => SdkClient::class,
-        ClientInterface::ACCOUNT => AbstractAccount::class,
         ClientInterface::REQUEST => Request::class,
         ClientInterface::RESPONSE => Response::class,
-        ClientInterface::OPERATOR => BaseOperator::class,
+        ClientInterface::OPERATOR => AbstractOperator::class,
+        ClientInterface::CACHE => AbstractCache::class,
+        ClientInterface::TEST => Test::class,
+        ClientInterface::ACCOUNT => Account::class,
+        ClientInterface::LOGGER => AbstractLogger::class,
     ];
 
-    private array $mapping;
+
+
+    /**
+     * @var array $map Массив для хранения классов и их соответствующих ID.
+     * Ключ - это ID, значение - это имя класса или вызываемый объект.
+     */
+    private array $map;
 
 
 
     /**
      * Конструктор
      *
-     * @param array|null $mapping Массив для хранения классов и их соответствующих ID.
+     * @param array|null $map Массив для хранения классов и их соответствующих ID.
      * Ключ - это ID, значение - это имя класса или вызываемый объект.
      */
-    public function __construct( ?array $mapping = null )
+    public function __construct( ?array $map = null )
     {
-        $this->mapping = $mapping ?? static::DEFAULT;
+        $this->map = $map ?? static::MAP;
     }
 
     /**
@@ -61,9 +67,9 @@ class ClassRegistry
      *
      * @throws Exception
      */
-    public function getClass(string $id): ?string
+    public function getClass( string $id ): ?string
     {
-        return $this->mapping[$id] ?? null;
+        return $this->map[$id] ?? null;
     }
 
     /**
@@ -73,8 +79,8 @@ class ClassRegistry
      *
      * @return bool
      */
-    public function has(string $id): bool
+    public function has( string $id ): bool
     {
-        return isset($this->mapping[$id]);
+        return isset($this->map[$id]);
     }
 }

@@ -3,8 +3,8 @@
 namespace andy87\sdk\client\core\transport;
 
 use Exception;
-use andy87\sdk\client\base\BaseClient;
-use andy87\sdk\client\base\BasePrompt;
+use andy87\sdk\client\base\AbstractClient;
+use andy87\sdk\client\base\components\Prompt;
 use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
@@ -17,9 +17,9 @@ use andy87\sdk\client\base\interfaces\RequestInterface;
  */
 class Request implements RequestInterface
 {
-    protected BaseClient $client;
+    protected AbstractClient $client;
 
-    protected BasePrompt $prompt;
+    protected Prompt $prompt;
 
     protected Query $query;
 
@@ -27,12 +27,12 @@ class Request implements RequestInterface
     /**
      * Конструктор класса Request.
      *
-     * @param BaseClient $client
-     * @param BasePrompt $prompt
+     * @param AbstractClient $client
+     * @param Prompt $prompt
      *
      * @throws Exception
      */
-    public function __construct(BaseClient $client, BasePrompt $prompt )
+    public function __construct( AbstractClient $client, Prompt $prompt )
     {
         $this->client = $client;
 
@@ -55,7 +55,7 @@ class Request implements RequestInterface
 
         $endpoint = $this->client->constructEndpoint( $path );
 
-        $this->query =  $this->constructQuery( $method, $endpoint, $data, $headers);
+        $this->query = $this->constructQuery( $method, $endpoint, $data, $headers);
     }
 
     /**
@@ -96,20 +96,21 @@ class Request implements RequestInterface
     /**
      * Возвращает prompt запроса.
      *
-     * @return BasePrompt
+     * @return Prompt
      */
-    public function getPrompt(): BasePrompt
+    public function getPrompt(): Prompt
     {
         return $this->prompt;
     }
 
     /**
-     * Возвращает Query запроса.
+     * {@inheritdoc}
      *
      * @return Query
      */
     public function getQuery(): Query
     {
         return $this->query;
+
     }
 }

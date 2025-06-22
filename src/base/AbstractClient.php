@@ -3,10 +3,12 @@
 namespace andy87\sdk\client\base;
 
 use Exception;
+use andy87\sdk\client\core\Test;
 use andy87\sdk\client\core\Modules;
 use andy87\sdk\client\core\Container;
+use andy87\sdk\client\base\components\Config;
 use andy87\sdk\client\core\transport\Response;
-use andy87\sdk\client\base\interfaces\TestInterface;
+use andy87\sdk\client\base\components\Account;
 use andy87\sdk\client\base\interfaces\ClientInterface;
 use andy87\sdk\client\base\interfaces\RequestInterface;
 
@@ -16,14 +18,14 @@ use andy87\sdk\client\base\interfaces\RequestInterface;
  *
  * @package src/base
  */
-abstract class BaseClient implements ClientInterface
+abstract class AbstractClient implements ClientInterface
 {
     protected const CONTAINER_CLASS = Container::class;
 
 
 
-    /** @var BaseConfig $config Конфигурация клиента */
-    protected BaseConfig $config;
+    /** @var Config $config Конфигурация клиента */
+    protected Config $config;
 
     /** @var Modules $modules Модули клиента */
     public Modules $modules;
@@ -33,11 +35,11 @@ abstract class BaseClient implements ClientInterface
     /**
      * Конструктор
      *
-     * @param BaseConfig $config
+     * @param Config $config
      *
      * @throws Exception
      */
-    public function __construct( BaseConfig $config )
+    public function __construct( Config $config )
     {
         $this->config = $this->prepareConfig( $config );
 
@@ -47,11 +49,11 @@ abstract class BaseClient implements ClientInterface
     /**
      * Кастомизация конфигурации клиента, если необходимо
      *
-     * @param BaseConfig $config
+     * @param Config $config
      *
-     * @return BaseConfig
+     * @return Config
      */
-    protected function prepareConfig(BaseConfig $config ): BaseConfig
+    protected function prepareConfig( Config $config ): Config
     {
         return $config;
     }
@@ -59,13 +61,13 @@ abstract class BaseClient implements ClientInterface
     /**
      * Устанавливает модули для работы клиента.
      *
-     * @param BaseConfig $config
+     * @param Config $config
      *
      * @return void
      *
      * @throws Exception
      */
-    public function setupModules(BaseConfig $config ): void
+    public function setupModules( Config $config ): void
     {
         $container = $this->constructContainer( $config );
 
@@ -75,13 +77,13 @@ abstract class BaseClient implements ClientInterface
     /**
      * Конструирует контейнер для хранения классов, используемых в клиенте.
      *
-     * @param BaseConfig $config
+     * @param Config $config
      *
      * @return Container
      *
      * @throws Exception
      */
-    protected function constructContainer(BaseConfig $config ): Container
+    protected function constructContainer( Config $config ): Container
     {
         $containerClass = static::CONTAINER_CLASS;
 
@@ -108,7 +110,7 @@ abstract class BaseClient implements ClientInterface
      */
     public function test(): void
     {
-        if ($this->modules->test instanceof TestInterface )
+        if ($this->modules->test instanceof Test )
         {
             $this->modules->test->run();
         }
@@ -125,11 +127,11 @@ abstract class BaseClient implements ClientInterface
     /**
      * Авторизация пользователя.
      *
-     * @param AbstractAccount $account
+     * @param Account $account
      *
      * @return bool
      */
-    abstract public function authorization(AbstractAccount $account ): bool;
+    abstract public function authorization( Account $account ): bool;
 
     /**
      * Проверка есть ли ошибки в ответе, решаемые повторной авторизацией

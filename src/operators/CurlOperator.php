@@ -5,10 +5,10 @@ namespace andy87\sdk\client\operators;
 use Exception;
 use CurlHandle;
 use andy87\sdk\client\helpers\Method;
-use andy87\sdk\client\base\BaseOperator;
 use andy87\sdk\client\core\transport\Query;
 use andy87\sdk\client\core\transport\Request;
 use andy87\sdk\client\core\transport\Response;
+use andy87\sdk\client\base\modules\AbstractOperator;
 
 /**
  *  Класс CurlOperator
@@ -17,7 +17,7 @@ use andy87\sdk\client\core\transport\Response;
  *
  * @package src/core/operators
  */
-class CurlBaseOperator extends BaseOperator
+class CurlOperator extends AbstractOperator
 {
     public array $options = [
         CURLOPT_RETURNTRANSFER => true,
@@ -49,7 +49,7 @@ class CurlBaseOperator extends BaseOperator
                 'message' => $error,
             ]);
 
-            $response = new Response(0);
+            $response = new Response( $request,0);
 
             $response->addError($error);
 
@@ -98,13 +98,12 @@ class CurlBaseOperator extends BaseOperator
 
                 $data = $query->getData();
 
-                if ( is_array($data) || is_string($data))
+                if ( !empty($data) )
                 {
-                    $data = is_array($data) ? http_build_query($data) : $data;
+                    $data = http_build_query($data);
+
+                    $this->options[CURLOPT_POSTFIELDS] = $data;
                 }
-
-                $this->options[CURLOPT_POSTFIELDS] = $data;
-
                 break;
 
             case Method::DELETE:

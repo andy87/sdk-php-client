@@ -3,9 +3,10 @@
 namespace andy87\sdk\client\core;
 
 use Exception;
-use andy87\sdk\client\base\interfaces\TestInterface;
-use andy87\sdk\client\base\interfaces\CacheInterface;
-use andy87\sdk\client\base\interfaces\OperatorInterface;
+use andy87\sdk\client\base\modules\AbstractCache;
+use andy87\sdk\client\base\modules\AbstractLogger;
+use andy87\sdk\client\base\modules\AbstractOperator;
+use andy87\sdk\client\base\interfaces\ClientInterface;
 
 /**
  * Class Modules
@@ -21,19 +22,25 @@ class Modules
     public Container $container;
 
     /**
-     * @var OperatorInterface $operator Интерфейс для отправки запросов к API
+     * @var AbstractOperator $operator Интерфейс для отправки запросов к API
      */
-    public OperatorInterface $operator;
+    public AbstractOperator $operator;
 
     /**
-     * @var CacheInterface|null $cache Интерфейс для работы с кэшем
+     * @var ?AbstractCache $cache Интерфейс для работы с кэшем
      */
-    public ?CacheInterface $cache;
+    public ?AbstractCache $cache;
 
     /**
-     * @var TestInterface|null $test Интерфейс для тестирования
+     * @var ?Test $test Интерфейс для тестирования
      */
-    public ?TestInterface $test;
+    public ?Test $test = null;
+
+    /**
+     * @var ?AbstractLogger $test Интерфейс для тестирования
+     */
+    public ?AbstractLogger $logger = null;
+
 
 
     /**
@@ -47,10 +54,10 @@ class Modules
     {
         $this->container = $container;
 
-        $this->operator = $this->container->get(OperatorInterface::class);
+        $this->operator = $this->container->get(ClientInterface::OPERATOR);
 
-        $this->cache = $this->container->get(CacheInterface::class);
+        $this->cache = $this->container->get(ClientInterface::CACHE);
 
-        $this->test = $this->container->get(TestInterface::class);
+        $this->test = $this->container->get(ClientInterface::TEST);
     }
 }

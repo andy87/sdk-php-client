@@ -1,6 +1,8 @@
 <?php
 
-namespace andy87\sdk\client\base;
+namespace andy87\sdk\client\base\modules;
+
+use andy87\sdk\client\base\components\Account;
 
 /**
  * Класс Cache
@@ -9,7 +11,7 @@ namespace andy87\sdk\client\base;
  *
  * @package src/base
  */
-abstract class BaseCache
+abstract class AbstractCache
 {
     /** @var array $data Массив для хранения данных. */
     protected array $data = [];
@@ -19,10 +21,10 @@ abstract class BaseCache
     /**
      * Конструктор класса Cache.
      *
-     * @param AbstractAccount $account
+     * @param Account $account
      * @param array $data
      */
-    public function __construct(AbstractAccount $account, array $data= [] )
+    public function __construct( Account $account, array $data= [] )
     {
         if ( !empty( $data ) )
         {
@@ -35,19 +37,19 @@ abstract class BaseCache
     /**
      * Записывает данные в кэш для указанного аккаунта.
      *
-     * @param AbstractAccount $account
+     * @param Account $account
      * @param array $data
      *
      * @return bool
      */
-    abstract public function setData(AbstractAccount $account, array $data ): bool;
+    abstract public function setData( Account $account, array $data ): bool;
 
     /**
      * Получает данные из кэша для указанного аккаунта.
      *
-     * @param AbstractAccount $account
+     * @param Account $account
      *
      * @return ?array
      */
-    abstract public function getData(AbstractAccount $account ): ?array;
+    abstract public function getData( Account $account ): ?array;
 }

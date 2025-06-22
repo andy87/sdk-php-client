@@ -1,9 +1,11 @@
 <?php
 
-namespace andy87\sdk\client\base;
+namespace andy87\sdk\client\base\modules;
 
 use Exception;
-use andy87\sdk\client\base\interfaces\OperatorInterface;
+use andy87\sdk\client\base\AbstractClient;
+use andy87\sdk\client\core\transport\Request;
+use andy87\sdk\client\core\transport\Response;
 
 /**
  * Класс Operator
@@ -12,10 +14,10 @@ use andy87\sdk\client\base\interfaces\OperatorInterface;
  *
  * @package src/base
  */
-abstract class BaseOperator implements OperatorInterface
+abstract class AbstractOperator
 {
-    /** @var BaseClient $client Экземпляр клиента, используемый для отправки запросов к API. */
-    protected BaseClient $client;
+    /** @var AbstractClient $client Экземпляр клиента, используемый для отправки запросов к API. */
+    protected AbstractClient $client;
 
 
 
@@ -23,12 +25,19 @@ abstract class BaseOperator implements OperatorInterface
      * Конструктор класса Operator
      * Инициализирует экземпляр клиента, который будет использоваться для отправки запросов к API.
      *
-     * @param BaseClient $client
+     * @param AbstractClient $client
      */
-    public function __construct(BaseClient $client )
+    public function __construct( AbstractClient $client )
     {
         $this->client = $client;
     }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    abstract public function sendRequest( Request $request ): Response;
 
     /**
      * Обработчик ошибок

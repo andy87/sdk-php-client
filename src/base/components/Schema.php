@@ -1,8 +1,6 @@
 <?php
 
-namespace andy87\sdk\client\base;
-
-use andy87\sdk\client\base\interfaces\SchemaInterface;
+namespace andy87\sdk\client\base\components;
 
 /**
  * Класс Dto
@@ -11,7 +9,7 @@ use andy87\sdk\client\base\interfaces\SchemaInterface;
  *
  * @package src/base
  */
-abstract class BaseSchema implements SchemaInterface
+abstract class Schema
 {
     protected const ERROR_PROPERTY_NOT_FOUND = 'Property "%s" not found in schema "%s".';
     protected const ERROR_CLASS_NOT_FOUND = 'Class "%s" not found for property "%s" in schema "%s".';
@@ -97,7 +95,7 @@ abstract class BaseSchema implements SchemaInterface
     /**
      * {@inheritDoc}
      */
-    public function validate(BasePrompt $prompt ): bool
+    public function validate( Prompt $prompt ): bool
     {
         return true;
     }

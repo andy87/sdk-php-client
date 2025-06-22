@@ -43,15 +43,17 @@ class Response implements ResponseInterface
     protected array $_errors = [];
 
 
-
     /**
      * Response constructor.
      *
+     * @param Request $request
      * @param int $statusCode
      * @param ?string $content
      */
-    public function __construct( int $statusCode, ?string $content = null )
+    public function __construct( Request $request, int $statusCode, ?string $content = null )
     {
+        $this->request = $request;
+
         $this->statusCode = $statusCode;
 
         $this->content = $content;
@@ -141,5 +143,15 @@ class Response implements ResponseInterface
     public function addError( string $error ): void
     {
         $this->_errors[] = $error;
+    }
+
+    /**
+     * Возвращает Request
+     *
+     * @return Request
+     */
+    public function getRequest(): Request
+    {
+        return $this->request;
     }
 }

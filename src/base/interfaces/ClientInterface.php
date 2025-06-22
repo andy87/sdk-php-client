@@ -2,8 +2,8 @@
 
 namespace andy87\sdk\client\base\interfaces;
 
-use andy87\sdk\client\base\AbstractAccount;
 use andy87\sdk\client\core\transport\Response;
+use andy87\sdk\client\base\components\Account;
 
 /**
  * Interface CacheInterface
@@ -21,6 +21,7 @@ interface ClientInterface
     public const CLIENT = 'client';
     public const LOGGER = 'logger';
     public const ACCOUNT = 'account';
+    public const CONFIG = 'config';
     public const TEST = 'test';
 
 
@@ -37,11 +38,11 @@ interface ClientInterface
     /**
      * Авторизация в API партнера
      *
-     * @param AbstractAccount $account
+     * @param Account $account
      *
      * @return bool
      */
-    public function authorization(AbstractAccount $account ): bool;
+    public function authorization( Account $account ): bool;
 
     /**
      * Проверка отсутствия ошибок валидности токена

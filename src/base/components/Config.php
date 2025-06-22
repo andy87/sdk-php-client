@@ -1,6 +1,6 @@
 <?php
 
-namespace andy87\sdk\client\base;
+namespace andy87\sdk\client\base\components;
 
 use andy87\sdk\client\helpers\Port;
 use andy87\sdk\client\core\ClassRegistry;
@@ -10,7 +10,7 @@ use andy87\sdk\client\core\ClassRegistry;
  *
  * @package src/base
  */
-abstract class BaseConfig
+abstract class Config
 {
     /** @var string $port Базовый Port для HTTP запросов к API (http\https) */
     public string $port = Port::HTTPS;
@@ -28,8 +28,8 @@ abstract class BaseConfig
     public array $headers = [];
 
 
-    /** @var AbstractAccount $account */
-    public AbstractAccount $account;
+    /** @var Account $account */
+    public Account $account;
 
     /** @var array $classes Контейнер для хранения дополнительных данных */
     public array $classes = [];
@@ -38,10 +38,10 @@ abstract class BaseConfig
 
     /** Конструктор класса Config.
      *
-     * @param AbstractAccount $account Аккаунт, связанный с конфигурацией.
+     * @param Account $account Аккаунт, связанный с конфигурацией.
      * @param array $classes Список конфигурации контейнера
      */
-    public function __construct( AbstractAccount $account, array $classes = ClassRegistry::DEFAULT )
+    public function __construct( Account $account, array $classes = ClassRegistry::MAP )
     {
         $this->account = $account;
 
@@ -51,9 +51,9 @@ abstract class BaseConfig
     /**
      * Получение аккаунта.
      *
-     * @return AbstractAccount Аккаунт, связанный с конфигурацией.
+     * @return Account Аккаунт, связанный с конфигурацией.
      */
-    public function getAccount(): AbstractAccount
+    public function getAccount(): Account
     {
         return $this->account;
     }

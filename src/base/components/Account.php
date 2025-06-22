@@ -1,6 +1,6 @@
 <?php
 
-namespace andy87\sdk\client\base;
+namespace andy87\sdk\client\base\components;
 
 /**
  * Класс Account
@@ -9,7 +9,7 @@ namespace andy87\sdk\client\base;
  *
  * @package src/base
  */
-abstract class AbstractAccount
+abstract class Account
 {
 
 }
