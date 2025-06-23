@@ -3,14 +3,12 @@
 namespace andy87\sdk\client\base;
 
 use Exception;
-use andy87\sdk\client\core\Test;
 use andy87\sdk\client\core\Modules;
 use andy87\sdk\client\core\Container;
+use andy87\sdk\client\core\transport\Request;
 use andy87\sdk\client\base\components\Config;
 use andy87\sdk\client\core\transport\Response;
-use andy87\sdk\client\base\components\Account;
 use andy87\sdk\client\base\interfaces\ClientInterface;
-use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
  * Класс Client
@@ -98,49 +96,18 @@ abstract class AbstractClient implements ClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Отправляет запрос к API.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     *
+     * @throws Exception
      */
-    public function constructEndpoint( string|int $path ): string
+    protected function sendRequest( Request $request ): Response
     {
-        return $this->config->getBaseUri() . '/' . $path;
+        return $this->modules->transport->sendRequest( $request );
     }
-
-    /**
-     * Запуск тестов в клиенте.
-     */
-    public function test(): void
-    {
-        if ($this->modules->test instanceof Test )
-        {
-            $this->modules->test->run();
-        }
-    }
-
-    /**
-     * Добавление данных требуемых для авторизации.
-     */
-    public function prepareAuthentication( RequestInterface $request ): void
-    {
-        // Логика установки данных для выполнения запросов требующих авторизации
-    }
-
-    /**
-     * Авторизация пользователя.
-     *
-     * @param Account $account
-     *
-     * @return bool
-     */
-    abstract public function authorization( Account $account ): bool;
-
-    /**
-     * Проверка есть ли ошибки в ответе, решаемые повторной авторизацией
-     *
-     * @param Response $response
-     *
-     * @return bool
-     */
-    abstract public function isTokenInvalid( Response $response ): bool;
 
     /**
      * Обработчик ошибок клиента.
@@ -149,6 +116,11 @@ abstract class AbstractClient implements ClientInterface
      *
      * @return void
      */
-    abstract public function errorHandler( string|array $data ): void;
-
+    public function errorHandler( string|array $data ): void
+    {
+        if ( $logger = $this->modules->logger )
+        {
+            $logger->errorHandler( $data );
+        }
+    }
 }

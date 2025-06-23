@@ -5,7 +5,7 @@ namespace andy87\sdk\client\core;
 use Exception;
 use andy87\sdk\client\base\modules\AbstractCache;
 use andy87\sdk\client\base\modules\AbstractLogger;
-use andy87\sdk\client\base\modules\AbstractOperator;
+use andy87\sdk\client\base\modules\AbstractTransport;
 use andy87\sdk\client\base\interfaces\ClientInterface;
 
 /**
@@ -22,9 +22,9 @@ class Modules
     public Container $container;
 
     /**
-     * @var AbstractOperator $operator Интерфейс для отправки запросов к API
+     * @var AbstractTransport $transport Интерфейс для отправки запросов к API
      */
-    public AbstractOperator $operator;
+    public AbstractTransport $transport;
 
     /**
      * @var ?AbstractCache $cache Интерфейс для работы с кэшем
@@ -32,9 +32,9 @@ class Modules
     public ?AbstractCache $cache;
 
     /**
-     * @var ?Test $test Интерфейс для тестирования
+     * @var ?AbstractTest $test Интерфейс для тестирования
      */
-    public ?Test $test = null;
+    public ?AbstractTest $test = null;
 
     /**
      * @var ?AbstractLogger $test Интерфейс для тестирования
@@ -54,7 +54,7 @@ class Modules
     {
         $this->container = $container;
 
-        $this->operator = $this->container->get(ClientInterface::OPERATOR);
+        $this->transport = $this->container->get(ClientInterface::OPERATOR);
 
         $this->cache = $this->container->get(ClientInterface::CACHE);
 

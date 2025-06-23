@@ -14,7 +14,7 @@ use andy87\sdk\client\core\transport\Response;
  *
  * @package src/base
  */
-abstract class AbstractOperator
+abstract class AbstractTransport
 {
     /** @var AbstractClient $client Экземпляр клиента, используемый для отправки запросов к API. */
     protected AbstractClient $client;
