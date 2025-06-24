@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\base\interfaces;
 
+use andy87\sdk\client\base\components\Prompt;
 use andy87\sdk\client\core\transport\Response;
 use andy87\sdk\client\base\components\Account;
 
@@ -33,7 +34,7 @@ interface ClientInterface
      *
      * @return string
      */
-    public function constructEndpoint( string|int $path ): string;
+    public function constructEndpoint( Prompt $prompt ): string;
 
     /**
      * Авторизация в API партнера

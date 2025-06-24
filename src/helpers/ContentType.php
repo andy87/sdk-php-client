@@ -22,17 +22,17 @@ class ContentType
 
 
 
-    public const APPLICATION_ZIP = 'application/zip';
+    public const ZIP = 'application/zip';
 
-    public const APPLICATION_PDF = 'application/pdf';
+    public const PDF = 'application/pdf';
 
-    public const APPLICATION_JSON = 'application/json';
+    public const JSON = 'application/json';
 
-    public const APPLICATION_XML = 'application/xml';
-
-
-    public const APPLICATION_X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded';
+    public const XML = 'application/xml';
 
 
-    public const APPLICATION_OCTET_STREAM = 'application/octet-stream';
+    public const X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded';
+
+
+    public const OCTET_STREAM = 'application/octet-stream';
 }

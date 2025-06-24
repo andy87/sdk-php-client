@@ -48,12 +48,11 @@ class Request implements RequestInterface
      */
     public function setupQuery(): void
     {
-        $path = $this->prompt->getPath();
         $method = $this->prompt->getMethod();
         $data = $this->prompt->release();
         $headers = $this->getHeaders();
 
-        $endpoint = $this->client->constructEndpoint( $path );
+        $endpoint = $this->client->constructEndpoint( $this->prompt );
 
         $this->query = $this->constructQuery( $method, $endpoint, $data, $headers);
     }

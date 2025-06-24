@@ -13,6 +13,9 @@ use andy87\sdk\client\helpers\Method;
  */
 abstract class Prompt
 {
+    /** @var true Статус использования префикса конфига */
+    public const USE_PREFIX = true;
+
     /**
      * Флаг, указывающий, является ли запрос приватным (требует авторизации).
      *

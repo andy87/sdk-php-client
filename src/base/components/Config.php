@@ -31,7 +31,7 @@ abstract class Config
     /** @var Account $account */
     public Account $account;
 
-    /** @var array $classes Контейнер для хранения дополнительных данных */
+    /** @var array $classes Контейнер для переназначения используемых классов */
     public array $classes = [];
 
 
@@ -65,10 +65,6 @@ abstract class Config
      */
     public function getBaseUri(): string
     {
-        $host = "$this->port://$this->host";
-
-        $prefix = $this->prefix ? trim($this->prefix, '/') : false;
-
-        return ( $prefix ) ? "$host/$prefix" : $host;
+        return "$this->port://$this->host";
     }
 }

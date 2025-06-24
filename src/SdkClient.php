@@ -39,7 +39,7 @@ abstract class SdkClient extends AbstractClient
 
         $log = [
             'method' => __METHOD__,
-            'prompt' => $prompt,
+            'func_get_args' => func_get_args(),
             'request' => $request,
             'send response' => $response
         ];
@@ -102,9 +102,16 @@ abstract class SdkClient extends AbstractClient
     /**
      * {@inheritDoc}
      */
-    public function constructEndpoint( string|int $path ): string
+    public function constructEndpoint( Prompt $prompt ): string
     {
-        return $this->config->getBaseUri() . '/' . $path;
+        $baseUrl = $this->config->getBaseUri();
+
+        if( $this->config->prefix && $prompt::USE_PREFIX )
+        {
+            $baseUrl = $baseUrl . '/' .$this->config->prefix;
+        }
+
+        return $baseUrl . '/' . $prompt->getPath();
     }
 
     /**
@@ -166,11 +173,23 @@ abstract class SdkClient extends AbstractClient
 
                 $response = $this->modules->transport->sendRequest( $request );
 
-                if ( $this->isTokenInvalid( $response ) )
+                if ($response->isOk())
                 {
+                    if ( $this->isTokenInvalid( $response ) )
+                    {
+                        $this->modules->logger->errorHandler([
+                            'method' => __METHOD__,
+                            'message' => 'Authorization error after re-authorization',
+                            'prompt' => $prompt,
+                            'request' => $request,
+                            'response' => $response
+                        ]);
+                    }
+                } else {
+
                     $this->modules->logger->errorHandler([
                         'method' => __METHOD__,
-                        'message' => 'Authorization error after re-authorization',
+                        'message' => 'Next response after re-authorization',
                         'prompt' => $prompt,
                         'request' => $request,
                         'response' => $response
