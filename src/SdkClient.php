@@ -3,15 +3,10 @@
 namespace andy87\sdk\client;
 
 use Exception;
-use andy87\sdk\client\core\transport\Url;
+use andy87\sdk\client\core\transport\{ Url, Response };
 use andy87\sdk\client\base\AbstractClient;
-use andy87\sdk\client\base\components\Config;
-use andy87\sdk\client\base\components\Prompt;
-use andy87\sdk\client\base\components\Schema;
-use andy87\sdk\client\base\components\Account;
-use andy87\sdk\client\base\interfaces\ClientInterface;
-use andy87\sdk\client\base\interfaces\RequestInterface;
-use andy87\sdk\client\core\transport\Response;
+use andy87\sdk\client\base\components\{ Account, Config, Prompt, Schema };
+use andy87\sdk\client\base\interfaces\{ ClientInterface, RequestInterface };
 
 /**
  * Класс SdkClient
