@@ -7,7 +7,7 @@ use andy87\sdk\client\core\transport\Response;
 use andy87\sdk\client\base\components\Account;
 
 /**
- * Интерфйс для классов котовые реализуют Client
+ * Интерфейс для классов котовые реализуют Client
  *
  * @package src/base/interfaces
  */

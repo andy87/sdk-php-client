@@ -3,7 +3,7 @@
 namespace andy87\sdk\client;
 
 use Exception;
-use andy87\sdk\client\core\transport\{ Url, Response };
+use andy87\sdk\client\core\transport\{Request, Url, Response};
 use andy87\sdk\client\base\AbstractClient;
 use andy87\sdk\client\base\components\{ Account, Config, Prompt, Schema };
 use andy87\sdk\client\base\interfaces\{ ClientInterface, RequestInterface };
@@ -11,7 +11,7 @@ use andy87\sdk\client\base\interfaces\{ ClientInterface, RequestInterface };
 /**
  * Класс SdkClient
  *
- * SDK клиента, представляющий слой который содержет логику тправки запросов к API и обрабатку ответа.
+ * SDK клиента, представляющий слой который содержет логику отправки запросов к API и обрабатку ответа.
  *
  * @package src/
  */
@@ -53,7 +53,7 @@ abstract class SdkClient extends AbstractClient
             'send response' => $response
         ];
 
-        $response = $this->handleResponse( $prompt, $response );
+        $response = $this->handleResponse( $request, $response );
 
         $log['handleResponse'] = $response;
 
@@ -176,14 +176,14 @@ abstract class SdkClient extends AbstractClient
     /**
      * Проверяет, является ли ответ ошибкой авторизации.
      *
-     * @param Prompt $prompt Объект запроса, содержащий информацию о запросе.
+     * @param Request $request Запрос, который был отправлен к API.
      * @param Response $response Ответ от API, который нужно проверить на наличие ошибок авторизации.
      *
      * @return Response
      *
      * @throws Exception
      */
-    private function handleResponse( Prompt $prompt, Response $response ): Response
+    private function handleResponse( Request $request, Response $response ): Response
     {
         if ( $this->isTokenInvalid( $response ) )
         {
@@ -191,34 +191,44 @@ abstract class SdkClient extends AbstractClient
 
             if ( $this->authorization( $account ) )
             {
-                $request = $this->constructRequest( $prompt );
+                $nextResponse = $this->modules->getTransport()->sendRequest( $request );
 
-                $response = $this->modules->getTransport()->sendRequest( $request );
-
-                if ($response->isOk())
+                if ($nextResponse->isOk())
                 {
-                    if ( $this->isTokenInvalid( $response ) )
+                    if ( $this->isTokenInvalid( $nextResponse ) )
                     {
-                        $this->modules->getLogger()?->errorHandler([
-                            'method' => __METHOD__,
-                            'message' => 'Authorization error after re-authorization',
-                            'prompt' => $prompt,
-                            'request' => $request,
-                            'response' => $response
-                        ]);
+                        $error = 'Token Invalid error after re-authorization';
                     }
-                } else {
 
-                    $this->modules->getLogger()?->errorHandler([
-                        'method' => __METHOD__,
-                        'message' => 'Next response after re-authorization',
-                        'prompt' => $prompt,
-                        'request' => $request,
-                        'response' => $response
-                    ]);
+                } else {
+                    $error = 'Response invalid error after re-authorization';
                 }
+
+                if (isset($error))
+                {
+                    $errorLog = [
+                        'method' => __METHOD__,
+                        'message' => $error,
+                        'request' => $request,
+                        'nextResponse' => $nextResponse
+                    ];
+                }
+
+            } else {
+
+                $response = new Response( $request, 0, null);
+                $response->addError( 'Authorization failed' );
+
+                $errorLog = [
+                    'method' => __METHOD__,
+                    'message' => 'Authorization failed',
+                    'account' => $account,
+                    'request' => $request,
+                ];
             }
         }
+
+        if (isset($errorLog)) $this->modules->getLogger()?->errorHandler($errorLog);
 
         return $response;
     }
@@ -238,6 +248,8 @@ abstract class SdkClient extends AbstractClient
      * @param Account $account
      *
      * @return bool
+     *
+     * @throws Exception
      */
     abstract public function authorization( Account $account ): bool;
 
