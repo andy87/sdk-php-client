@@ -45,7 +45,7 @@ abstract class Config
      *  ]
      * ```
      */
-    protected array $mock = [];
+    protected array $mockList = [];
 
 
 
@@ -119,5 +119,15 @@ abstract class Config
     public function getRegistryOverrides(): array
     {
         return $this->registryOverrides;
+    }
+
+    /**
+     * Возвращает массив MockInterface, используемых для тестирования.
+     *
+     * @return MockInterface[]
+     */
+    public function getMockList(): array
+    {
+        return $this->mockList;
     }
 }

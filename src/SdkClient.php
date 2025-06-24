@@ -34,7 +34,7 @@ abstract class SdkClient extends AbstractClient
 
         } else {
 
-            if ( $mock = $this->modules->getMock() )
+            if ( $mock = $this->modules->getMockManager() )
             {
                 $promptClass = $prompt::class;
 

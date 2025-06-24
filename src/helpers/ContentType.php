@@ -7,9 +7,8 @@ namespace andy87\sdk\client\helpers;
  *
  * @package src/hepers
  */
-class ContentType
+abstract class ContentType
 {
-
     public const TEXT_PLAIN = 'text/plain';
 
     public const TEXT_HTML = 'text/html';

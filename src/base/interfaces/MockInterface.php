@@ -5,7 +5,7 @@ namespace andy87\sdk\client\base\interfaces;
 use andy87\sdk\client\base\components\Schema;
 
 /**
- * Интерфейс MockInterface
+ * Интерфейс для классов, которые реализуют логику моков.
  *
  * @package src/base/interfaces
  */

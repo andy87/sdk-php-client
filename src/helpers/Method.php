@@ -7,7 +7,7 @@ namespace andy87\sdk\client\helpers;
  *
  * @package src/hepers
  */
-class Method
+abstract class Method
 {
     public const GET = 'GET';
 

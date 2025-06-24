@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\transports;
 
+use andy87\sdk\client\base\interfaces\RequestInterface;
 use Exception;
 use CurlHandle;
 use andy87\sdk\client\helpers\Method;
@@ -11,13 +12,13 @@ use andy87\sdk\client\core\transport\Response;
 use andy87\sdk\client\base\modules\AbstractTransport;
 
 /**
- *  Класс CurlOperator
+ * Класс CurlOperator
  *
  * Отправляет запросы к API с использованием cURL.
  *
  * @package src/core/operators
  */
-class CurlTransport extends AbstractTransport
+final class CurlTransport extends AbstractTransport
 {
     public array $options = [
         CURLOPT_RETURNTRANSFER => true,
@@ -28,13 +29,13 @@ class CurlTransport extends AbstractTransport
     /**
      * Отправляет запрос к API.
      *
-     * @param Request $request
+     * @param RequestInterface $request
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function sendRequest( Request $request ): Response
+    public function sendRequest( RequestInterface $request ): Response
     {
         $query = $request->getQuery();
 

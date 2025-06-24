@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\core;
 
+use andy87\sdk\client\base\components\MockManager;
 use Exception;
 use andy87\sdk\client\SdkClient;
 use andy87\sdk\client\base\components\Schema;
@@ -36,6 +37,7 @@ class ClassRegistry
         ClientInterface::TEST => AbstractTest::class,
         ClientInterface::ACCOUNT => Account::class,
         ClientInterface::LOGGER => AbstractLogger::class,
+        ClientInterface::MOCK => MockManager::class,
     ];
 
 

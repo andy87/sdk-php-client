@@ -5,7 +5,7 @@ namespace andy87\sdk\client\base\interfaces;
 use andy87\sdk\client\core\transport\Query;
 
 /**
- * Интерфейс RequestInterface
+ * Интерфейс для классов, которые реализуют логику настройки HTTP запроса к API.
  *
  * Определяет методы для настройки запроса к API.
  *

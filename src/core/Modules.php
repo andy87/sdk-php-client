@@ -3,12 +3,10 @@
 namespace andy87\sdk\client\core;
 
 use Exception;
-use andy87\sdk\client\base\components\Mock;
-use andy87\sdk\client\base\modules\AbstractTest;
-use andy87\sdk\client\base\modules\AbstractCache;
-use andy87\sdk\client\base\modules\AbstractLogger;
-use andy87\sdk\client\base\modules\AbstractTransport;
+use andy87\sdk\client\base\AbstractClient;
+use andy87\sdk\client\base\components\MockManager;
 use andy87\sdk\client\base\interfaces\ClientInterface;
+use andy87\sdk\client\base\modules\{ AbstractTest, AbstractLogger, AbstractTransport, AbstractCache };
 
 /**
  * Class Modules
@@ -18,6 +16,10 @@ use andy87\sdk\client\base\interfaces\ClientInterface;
  */
 class Modules
 {
+    /** @var AbstractClient $client Клиент, использующий модули */
+    protected AbstractClient $client;
+
+
     /** @var Container $container Контейнер для хранения зависимостей */
     protected Container $container;
 
@@ -26,8 +28,8 @@ class Modules
 
 
 
-    /** @var null|Mock $mock Обект для реализации моков ответов API */
-    protected ?Mock $mock = null;
+    /** @var null|MockManager $mockManager Обект для реализации моков ответов API */
+    protected ?MockManager $mockManager = null;
 
     /** @var null|AbstractCache $cache Обект для реализации кэширования */
     protected ?AbstractCache $cache;
@@ -45,19 +47,52 @@ class Modules
     /**
      * Modules constructor.
      *
+     * @param AbstractClient $client
      * @param Container $container
      *
      * @throws Exception
      */
-    public function __construct( Container $container )
+    public function __construct( AbstractClient $client, Container $container )
     {
+        $this->client = $client;
+
         $this->container = $container;
 
-        $this->transport = $this->getContainer()->get(ClientInterface::TRANSPORT);
+        $this->transport = $this->getContainer()->get( ClientInterface::TRANSPORT );
 
-        $this->cache = $this->getContainer()->get(ClientInterface::CACHE);
+        $this->cache = $this->getContainer()->get( ClientInterface::CACHE );
 
-        $this->test = $this->getContainer()->get(ClientInterface::TEST);
+        $this->test = $this->getContainer()->get( ClientInterface::TEST );
+
+        $this->mockManager = $this->constructMockManager();
+    }
+
+    /**
+     * Создает мок-объект для тестирования.
+     *
+     * @return ?MockManager
+     *
+     * @throws Exception
+     */
+    private function constructMockManager(): ?MockManager
+    {
+        $mockClass = $this->getContainer()->getClassRegistry( ClientInterface::MOCK );
+
+        $mock = null;
+
+        if ( $mockClass )
+        {
+            $mockList = $this->client->getConfig()->getMockList();
+
+            $mock = new $mockClass( $mockList );
+
+            if ( !$mock instanceof MockManager )
+            {
+                throw new Exception( 'Mock class not found or not instance of Mock' );
+            }
+        }
+
+        return $mock;
     }
 
     /**
@@ -115,9 +150,9 @@ class Modules
      *
      * @return null|AbstractLogger
      */
-    public function getMock(): ?Mock
+    public function getMockManager(): ?MockManager
     {
-        return $this->mock;
+        return $this->mockManager;
     }
 
     /**

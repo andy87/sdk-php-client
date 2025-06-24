@@ -16,12 +16,18 @@ use andy87\sdk\client\core\transport\Response;
 
 /**
  * Класс Client
- *  Базовый класс клиента содержащий методы для работы клиента.
+ *  Основной Абстрактный слой клиентов.
  *
  * @package src/base
  */
 abstract class AbstractClient implements ClientInterface
 {
+    /**
+     * Константа для класса контейнера, используемого в клиенте.
+     * Для переопределения в наследуемых классах, при необходимости.
+     *
+     * @var string
+     */
     protected const CONTAINER_CLASS = Container::class;
 
 
@@ -73,7 +79,7 @@ abstract class AbstractClient implements ClientInterface
     {
         $container = $this->constructContainer( $config );
 
-        $this->modules = new Modules( $container );
+        $this->modules = new Modules( $this, $container );
     }
 
     /**

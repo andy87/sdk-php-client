@@ -6,6 +6,8 @@ use andy87\sdk\client\core\transport\Request;
 
 /**
  * Интерфейс для представления ответа от API.
+ *
+ * @package src/base/interfaces
  */
 interface ResponseInterface
 {

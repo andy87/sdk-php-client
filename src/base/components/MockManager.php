@@ -9,7 +9,7 @@ use Exception;
  *
  * @package src/base/components
  */
-class Mock
+class MockManager
 {
     /**
      * @var array<string, Schema> Mock map

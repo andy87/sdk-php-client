@@ -7,8 +7,7 @@ use andy87\sdk\client\core\transport\Response;
 use andy87\sdk\client\base\components\Account;
 
 /**
- * Interface CacheInterface
- * Represents a cache interface for storing and retrieving data.
+ * Интерфйс для классов котовые реализуют Client
  *
  * @package src/base/interfaces
  */
