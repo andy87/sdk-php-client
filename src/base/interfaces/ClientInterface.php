@@ -14,7 +14,6 @@ use andy87\sdk\client\base\components\Account;
  */
 interface ClientInterface
 {
-
     public const CONTAINER = 'container';
 
     public const ACCOUNT = 'account';
@@ -25,6 +24,7 @@ interface ClientInterface
     public const CACHE = 'cache';
     public const LOGGER = 'logger';
     public const TEST = 'test';
+    public const MOCK = 'mock';
 
     public const PROMPT = 'prompt';
     public const SCHEMA = 'schema';

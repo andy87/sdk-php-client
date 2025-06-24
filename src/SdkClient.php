@@ -33,6 +33,20 @@ abstract class SdkClient extends AbstractClient
      */
     public function send( Prompt $prompt ): ?Schema
     {
+        if ( $prompt->mock )
+        {
+            return $prompt->mock->response();
+
+        } else {
+
+            if ( $mock = $this->modules->getMock() )
+            {
+                $promptClass = $prompt::class;
+
+                return $mock->get( $promptClass );
+            }
+        }
+
         $request = $this->constructRequest( $prompt );
 
         $response = $this->sendRequest( $request );
@@ -137,7 +151,7 @@ abstract class SdkClient extends AbstractClient
      */
     public function test(): void
     {
-        $this->getModule(ClientInterface::TEST)->run();
+        $this->getModule(ClientInterface::TEST)->run( $this );
     }
 
     /**
@@ -220,8 +234,6 @@ abstract class SdkClient extends AbstractClient
      */
     public function prepareAuthentication( Prompt $prompt, RequestInterface $request ): RequestInterface
     {
-
-
         return $request;
     }
 

@@ -3,7 +3,7 @@
 namespace andy87\sdk\client\base\components;
 
 use andy87\sdk\client\base\interfaces\AuthorizationInterface;
-use andy87\sdk\client\helpers\Method;
+use andy87\sdk\client\base\interfaces\MockInterface;
 
 /**
  * Класс Prompt
@@ -59,6 +59,13 @@ abstract class Prompt
      * @var null|string $contentType
      */
     protected ?string $contentType = null;
+
+    /**
+     * Мок запроса, если мок задан.
+     *
+     * @var null|MockInterface $mock
+     */
+    public ?MockInterface $mock = null;
 
 
 

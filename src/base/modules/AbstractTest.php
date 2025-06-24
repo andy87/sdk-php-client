@@ -3,6 +3,7 @@
 namespace andy87\sdk\client\base\modules;
 
 use Exception;
+use andy87\sdk\client\SdkClient;
 
 /**
  * Class Response
@@ -13,9 +14,11 @@ use Exception;
 abstract class AbstractTest
 {
     /**
+     * @param SdkClient $client
+     *
      * @return bool
      *
      * @throws Exception
      */
-    abstract public function run(): bool;
+    abstract public function run( SdkClient $client ): bool;
 }

@@ -4,6 +4,7 @@ namespace andy87\sdk\client\base\components;
 
 use andy87\sdk\client\helpers\Port;
 use andy87\sdk\client\core\ClassRegistry;
+use andy87\sdk\client\base\interfaces\MockInterface;
 
 /**
  * BКонфигурация базового клиента API.
@@ -33,6 +34,18 @@ abstract class Config
 
     /** @var array $registryOverrides Контейнер для переназначения используемых классов */
     protected array $registryOverrides = [];
+
+    /**
+     * @var array<string, MockInterface> $schemas Массив Mock ответов
+     *
+     * ```
+     *  [
+     *      AccessTokenPrompt::class => AccessTokenMock::class,
+     *      ApplicationsWebhookPrompt::class => ApplicationsWebhookMock::class,
+     *  ]
+     * ```
+     */
+    protected array $mock = [];
 
 
 

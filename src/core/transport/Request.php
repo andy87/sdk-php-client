@@ -6,6 +6,7 @@ use Exception;
 use andy87\sdk\client\base\AbstractClient;
 use andy87\sdk\client\base\components\Prompt;
 use andy87\sdk\client\base\interfaces\RequestInterface;
+use andy87\sdk\client\base\interfaces\AuthorizationInterface;
 
 /**
  * Класс Request
@@ -91,22 +92,28 @@ class Request implements RequestInterface
 
         $query = new $queryClass( $method, $endpoint, $data, $headers );
 
-        return $this->prepareAuthorization( $this->client, $this->prompt, $query );
+        $this->auth( $this->client, $this->prompt, $query );
+
+        return $query;
     }
 
     /**
      * Подготавливает авторизацию для запроса.
      *
-     * @throws Exception
+     * @param AbstractClient $client
+     * @param Prompt $prompt
+     * @param Query $query
+     *
+     * @return void
+     *
      */
-    private function prepareAuthorization( AbstractClient $client, Prompt $prompt, Query $query ): Query
+    private function auth( AbstractClient $client, Prompt $prompt, Query $query ): void
     {
-        foreach ( $prompt::AUTH as $authorization )
+        foreach ( $prompt::AUTH as $auth )
         {
-            $query = (new $authorization())->run( $client, $query );
+            /** @var $auth AuthorizationInterface */
+            (new $auth())->run( $client, $query );
         }
-
-        return $query;
     }
 
     /**

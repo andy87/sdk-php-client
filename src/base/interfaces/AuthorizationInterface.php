@@ -12,5 +12,5 @@ use andy87\sdk\client\core\transport\Query;
  */
 interface AuthorizationInterface
 {
-    public function run( AbstractClient $client, Query $query ): Query;
+    public function run( AbstractClient $client, Query $query ): void;
 }

@@ -3,6 +3,7 @@
 namespace andy87\sdk\client\core;
 
 use Exception;
+use andy87\sdk\client\base\components\Mock;
 use andy87\sdk\client\base\modules\AbstractTest;
 use andy87\sdk\client\base\modules\AbstractCache;
 use andy87\sdk\client\base\modules\AbstractLogger;
@@ -25,13 +26,18 @@ class Modules
 
 
 
-    /** @var null|AbstractCache $cache Интерфейс для работы с кэшем */
+    /** @var null|Mock $mock Обект для реализации моков ответов API */
+    protected ?Mock $mock = null;
+
+    /** @var null|AbstractCache $cache Обект для реализации кэширования */
     protected ?AbstractCache $cache;
 
-    /** @var null|AbstractTest $test Интерфейс для тестирования */
+
+    /** @var null|AbstractTest $test Обект для реализации тестирования API */
     protected ?AbstractTest $test = null;
 
-    /** @var null|AbstractLogger $test Интерфейс для тестирования */
+
+    /** @var null|AbstractLogger $logger Обект для реализации логирования запросов и ответов API */
     protected ?AbstractLogger $logger = null;
 
 
@@ -102,6 +108,16 @@ class Modules
     public function getLogger(): ?AbstractLogger
     {
         return $this->logger;
+    }
+
+    /**
+     * Получает интерфейс для моков
+     *
+     * @return AbstractLogger|null
+     */
+    public function getMock(): ?Mock
+    {
+        return $this->mock;
     }
 
     /**
