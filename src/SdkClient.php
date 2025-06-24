@@ -3,6 +3,7 @@
 namespace andy87\sdk\client;
 
 use Exception;
+use andy87\sdk\client\core\transport\Url;
 use andy87\sdk\client\base\AbstractClient;
 use andy87\sdk\client\core\transport\Request;
 use andy87\sdk\client\base\components\Prompt;
@@ -104,14 +105,27 @@ abstract class SdkClient extends AbstractClient
      */
     public function constructEndpoint( Prompt $prompt ): string
     {
-        $baseUrl = $this->config->getBaseUri();
+        $url = $this->constructUrl( $this->config->url, $prompt );
 
-        if( $this->config->prefix && $prompt::USE_PREFIX )
-        {
-            $baseUrl = $baseUrl . '/' .$this->config->prefix;
-        }
+        return $url->getFullPath();
+    }
 
-        return $baseUrl . '/' . $prompt->getPath();
+    /**
+     * Конструирует путь для запроса на основе объекта Prompt.
+     *
+     * @param Url $source
+     * @param Prompt $prompt
+     *
+     * @return Url
+     */
+    private function constructUrl(Url $source, Prompt $prompt ): Url
+    {
+        $protocol = $source->getProtocol();
+        $host = $source->getHost();
+        $prefix = ( $prompt::USE_PREFIX ) ? $source->getPrefix() : null;
+        $path = $prompt->getPath();
+
+        return new Url( $protocol, $host, prefix:$prefix, path:$path );
     }
 
     /**

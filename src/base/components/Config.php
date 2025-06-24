@@ -2,8 +2,8 @@
 
 namespace andy87\sdk\client\base\components;
 
-use andy87\sdk\client\helpers\Port;
 use andy87\sdk\client\core\ClassRegistry;
+use andy87\sdk\client\core\transport\Url;
 
 /**
  * BКонфигурация базового клиента API.
@@ -12,16 +12,7 @@ use andy87\sdk\client\core\ClassRegistry;
  */
 abstract class Config
 {
-    /** @var string $port Базовый Port для HTTP запросов к API (http\https) */
-    public string $port = Port::HTTPS;
-
-
-    /** @var string $host Базовый URI API, (например: api.example.com") */
-    public string $host;
-
-
-    /** @var ?string $prefix префикс запросов (например: "v1", "api", "api/v1") */
-    public ?string $prefix = null;
+    public Url $url;
 
 
     /** @var array $headers Заголовки используемые всеми запросами */
@@ -65,6 +56,6 @@ abstract class Config
      */
     public function getBaseUri(): string
     {
-        return "$this->port://$this->host";
+        return $this->url->getFullPath();
     }
 }
