@@ -83,7 +83,7 @@ class Modules
     /**
      * Получает интерфейс для работы с кэшем
      *
-     * @return AbstractCache|null
+     * @return null|AbstractCache
      */
     public function getCache(): ?AbstractCache
     {
@@ -93,7 +93,7 @@ class Modules
     /**
      * Получает интерфейс для тестирования
      *
-     * @return AbstractTest|null
+     * @return null|AbstractTest
      */
     public function getTest(): ?AbstractTest
     {
@@ -103,7 +103,7 @@ class Modules
     /**
      * Получает интерфейс для логирования
      *
-     * @return AbstractLogger|null
+     * @return null|AbstractLogger
      */
     public function getLogger(): ?AbstractLogger
     {
@@ -113,7 +113,7 @@ class Modules
     /**
      * Получает интерфейс для моков
      *
-     * @return AbstractLogger|null
+     * @return null|AbstractLogger
      */
     public function getMock(): ?Mock
     {

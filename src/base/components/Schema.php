@@ -33,7 +33,7 @@ abstract class Schema
     /**
      * Содержит ошибки схемы
      *
-     * @var array|null
+     * @var null|array
      */
     protected ?array $_errors = null;
 

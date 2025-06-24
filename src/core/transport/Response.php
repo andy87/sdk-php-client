@@ -18,22 +18,22 @@ class Response implements ResponseInterface
     protected Request $request;
 
     /**
-     * @var int|null $statusCode Код статуса ответа
+     * @var null|int $statusCode Код статуса ответа
      */
     protected ?int $statusCode = null;
 
     /**
-     * @var string|null $content Содержимое Raw ответа
+     * @var null|string $content Содержимое Raw ответа
      */
     protected ?string $content = null;
 
     /**
-     * @var array|null $result Результат ответа в виде ассоциативного массива
+     * @var null|array $result Результат ответа в виде ассоциативного массива
      */
     protected ?array $result = null;
 
     /**
-     * @var array|null $customParams Дополнительные параметры ответа
+     * @var null|array $customParams Дополнительные параметры ответа
      */
     protected ?array $customParams = null;
 

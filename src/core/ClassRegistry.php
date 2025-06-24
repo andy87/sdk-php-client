@@ -51,7 +51,7 @@ class ClassRegistry
     /**
      * Конструктор
      *
-     * @param array|null $map Массив для хранения классов и их соответствующих ID.
+     * @param null|array $map Массив для хранения классов и их соответствующих ID.
      * Ключ - это ID, значение - это имя класса или вызываемый объект.
      */
     public function __construct( ?array $map = null )

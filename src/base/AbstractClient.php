@@ -104,11 +104,11 @@ abstract class AbstractClient implements ClientInterface
      *
      * @param string $id
      *
-     * @return AbstractTest|AbstractCache|AbstractLogger|AbstractTransport|Container
+     * @return null|AbstractTest|AbstractCache|AbstractLogger|AbstractTransport|Container
      *
      * @throws Exception
      */
-    public function getModule( string $id ): AbstractTest|AbstractCache|AbstractLogger|AbstractTransport|Container
+    public function getModule( string $id ): null|AbstractTest|AbstractCache|AbstractLogger|AbstractTransport|Container
     {
         return match ($id)
         {
