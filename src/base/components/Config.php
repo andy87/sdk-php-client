@@ -2,8 +2,8 @@
 
 namespace andy87\sdk\client\base\components;
 
+use andy87\sdk\client\helpers\Port;
 use andy87\sdk\client\core\ClassRegistry;
-use andy87\sdk\client\core\transport\Url;
 
 /**
  * BКонфигурация базового клиента API.
@@ -12,31 +12,40 @@ use andy87\sdk\client\core\transport\Url;
  */
 abstract class Config
 {
-    public Url $url;
+    /** @var string $protocol Базовый Port для HTTP запросов к API (http\https) */
+    protected string $protocol = Port::HTTPS;
+
+
+    /** @var string $host Базовый URI API, (например: api.example.com") */
+    protected string $host;
+
+
+    /** @var null|string $prefix префикс запросов (например: "v1", "api", "api/v1") */
+    protected ?string $prefix = null;
 
 
     /** @var array $headers Заголовки используемые всеми запросами */
-    public array $headers = [];
+    protected array $headers = [];
 
 
     /** @var Account $account */
-    public Account $account;
+    protected Account $account;
 
-    /** @var array $classes Контейнер для переназначения используемых классов */
-    public array $classes = [];
+    /** @var array $registryOverrides Контейнер для переназначения используемых классов */
+    protected array $registryOverrides = [];
 
 
 
     /** Конструктор класса Config.
      *
      * @param Account $account Аккаунт, связанный с конфигурацией.
-     * @param array $classes Список конфигурации контейнера
+     * @param array $classRegistry Список конфигурации контейнера
      */
-    public function __construct( Account $account, array $classes = ClassRegistry::MAP )
+    public function __construct( Account $account, array $classRegistry = [] )
     {
         $this->account = $account;
 
-        $this->classes = $classes;
+        $this->registryOverrides = array_merge(ClassRegistry::MAP, $classRegistry );
     }
 
     /**
@@ -50,12 +59,52 @@ abstract class Config
     }
 
     /**
-     * Получение полного базового URI.
+     * Возвращает протокол, используемый для запросов к API.
      *
-     * @return string Полный базовый URI, включая префикс, если он задан.
+     * @return string
      */
-    public function getBaseUri(): string
+    public function getProtocol(): string
     {
-        return $this->url->getFullPath();
+        return $this->protocol;
+    }
+
+    /**
+     * Возвращает хост, используемый для запросов к API.
+     *
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+
+    /**
+     * Возвращает префикс, используемый для запросов к API.
+     *
+     * @return ?string
+     */
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * Возвращает массив заголовков, используемых для запросов к API.
+     *
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    /**
+     * Возвращает массив классов, используемых в клиенте.
+     *
+     * @return array
+     */
+    public function getRegistryOverrides(): array
+    {
+        return $this->registryOverrides;
     }
 }

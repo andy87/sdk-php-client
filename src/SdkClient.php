@@ -5,14 +5,13 @@ namespace andy87\sdk\client;
 use Exception;
 use andy87\sdk\client\core\transport\Url;
 use andy87\sdk\client\base\AbstractClient;
-use andy87\sdk\client\core\transport\Request;
+use andy87\sdk\client\base\components\Config;
 use andy87\sdk\client\base\components\Prompt;
 use andy87\sdk\client\base\components\Schema;
 use andy87\sdk\client\base\components\Account;
-use andy87\sdk\client\core\transport\Response;
-use andy87\sdk\client\base\modules\AbstractTest;
 use andy87\sdk\client\base\interfaces\ClientInterface;
 use andy87\sdk\client\base\interfaces\RequestInterface;
+use andy87\sdk\client\core\transport\Response;
 
 /**
  * Класс SdkClient
@@ -76,7 +75,7 @@ abstract class SdkClient extends AbstractClient
             $log['message'] = 'Response error (is not OK). Status code: ' . $response->getStatusCode();
         }
 
-        $this->modules->logger->errorHandler($log);
+        $this->modules->getLogger()?->errorHandler($log);
 
         return null;
     }
@@ -84,20 +83,18 @@ abstract class SdkClient extends AbstractClient
     /**
      * @param Prompt $prompt
      *
-     * @return Request
+     * @return RequestInterface
      *
      * @throws Exception
      */
-    protected function constructRequest( Prompt $prompt ): Request
+    protected function constructRequest( Prompt $prompt ): RequestInterface
     {
-        $requestClassName = $this->modules->container->getClassRegistry( ClientInterface::REQUEST );
+        $requestClassName = $this->modules->getContainer()->getClassRegistry( ClientInterface::REQUEST );
 
-        /** @var Request $request */
-        $request = new $requestClassName( $this, $prompt );
-
-        $this->prepareAuthentication( $request );
-
-        return $request;
+        return $this->prepareAuthentication(
+            $prompt,
+            new $requestClassName( $this, $prompt )
+        );
     }
 
     /**
@@ -105,27 +102,32 @@ abstract class SdkClient extends AbstractClient
      */
     public function constructEndpoint( Prompt $prompt ): string
     {
-        $url = $this->constructUrl( $this->config->url, $prompt );
-
-        return $url->getFullPath();
+        return $this
+            ->constructUrl( $this->getConfig(), $prompt )
+            ->getFullPath();
     }
 
     /**
      * Конструирует путь для запроса на основе объекта Prompt.
      *
-     * @param Url $source
+     * @param Config $config
      * @param Prompt $prompt
      *
      * @return Url
      */
-    private function constructUrl(Url $source, Prompt $prompt ): Url
+    private function constructUrl( Config $config, Prompt $prompt ): Url
     {
-        $protocol = $source->getProtocol();
-        $host = $source->getHost();
-        $prefix = ( $prompt::USE_PREFIX ) ? $source->getPrefix() : null;
-        $path = $prompt->getPath();
+        if ( $prefix = $config->getPrefix() )
+        {
+            $prefix = ( $prompt::USE_PREFIX ) ? $prefix : null;
+        }
 
-        return new Url( $protocol, $host, prefix:$prefix, path:$path );
+        return new Url(
+            $config->getProtocol(),
+            $config->getHost(),
+            prefix:$prefix,
+            path:$prompt->getPath()
+        );
     }
 
     /**
@@ -133,21 +135,18 @@ abstract class SdkClient extends AbstractClient
      *
      * @throws Exception
      */
-    public function test( string $promptClass ): void
+    public function test(): void
     {
-        if ($this->modules->test instanceof AbstractTest )
-        {
-            $this->modules->test->run( $promptClass );
-        }
+        $this->getModule(ClientInterface::TEST)->run();
     }
 
     /**
-     * @param Request $request
+     * @param RequestInterface $request
      * @param Response $response
      *
      * @return ?Schema
      */
-    protected function constructSchema( Request $request, Response $response ): ?Schema
+    protected function constructSchema( RequestInterface $request, Response $response ): ?Schema
     {
         $schemaClassName = $request->getPrompt()->getSchema();
 
@@ -179,19 +178,19 @@ abstract class SdkClient extends AbstractClient
     {
         if ( $this->isTokenInvalid( $response ) )
         {
-            $account = $this->config->getAccount();
+            $account = $this->getConfig()->getAccount();
 
             if ( $this->authorization( $account ) )
             {
                 $request = $this->constructRequest( $prompt );
 
-                $response = $this->modules->transport->sendRequest( $request );
+                $response = $this->modules->getTransport()->sendRequest( $request );
 
                 if ($response->isOk())
                 {
                     if ( $this->isTokenInvalid( $response ) )
                     {
-                        $this->modules->logger->errorHandler([
+                        $this->modules->getLogger()?->errorHandler([
                             'method' => __METHOD__,
                             'message' => 'Authorization error after re-authorization',
                             'prompt' => $prompt,
@@ -201,7 +200,7 @@ abstract class SdkClient extends AbstractClient
                     }
                 } else {
 
-                    $this->modules->logger->errorHandler([
+                    $this->modules->getLogger()?->errorHandler([
                         'method' => __METHOD__,
                         'message' => 'Next response after re-authorization',
                         'prompt' => $prompt,
@@ -219,9 +218,11 @@ abstract class SdkClient extends AbstractClient
     /**
      * Добавление данных требуемых для авторизации.
      */
-    public function prepareAuthentication( RequestInterface $request ): void
+    public function prepareAuthentication( Prompt $prompt, RequestInterface $request ): RequestInterface
     {
-        // Логика установки данных для выполнения запросов требующих авторизации
+
+
+        return $request;
     }
 
     /**

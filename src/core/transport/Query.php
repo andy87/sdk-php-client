@@ -95,4 +95,18 @@ class Query
     {
         return $this->customParams;
     }
+
+    /**
+     * Добавляет пользовательские заголовки к запросу.
+     * Если заголовок с таким ключом уже существует, он будет перезаписан.
+     *
+     * @param array $headers
+     */
+    public function addCustomHeaders( array $headers ): void
+    {
+        foreach ( $headers as $key => $value )
+        {
+            $this->headers[$key] = $value;
+        }
+    }
 }

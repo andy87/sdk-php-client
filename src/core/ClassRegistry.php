@@ -31,7 +31,7 @@ class ClassRegistry
         ClientInterface::CLIENT => SdkClient::class,
         ClientInterface::REQUEST => Request::class,
         ClientInterface::RESPONSE => Response::class,
-        ClientInterface::OPERATOR => AbstractTransport::class,
+        ClientInterface::TRANSPORT => AbstractTransport::class,
         ClientInterface::CACHE => AbstractCache::class,
         ClientInterface::TEST => AbstractTest::class,
         ClientInterface::ACCOUNT => Account::class,

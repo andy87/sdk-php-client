@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\base\modules;
 
+use andy87\sdk\client\base\interfaces\RequestInterface;
 use Exception;
 use andy87\sdk\client\base\AbstractClient;
 use andy87\sdk\client\core\transport\Request;
@@ -33,11 +34,11 @@ abstract class AbstractTransport
     }
 
     /**
-     * @param Request $request
+     * @param RequestInterface $request
      *
      * @return Response
      */
-    abstract public function sendRequest( Request $request ): Response;
+    abstract public function sendRequest( RequestInterface $request ): Response;
 
     /**
      * Обработчик ошибок
@@ -45,6 +46,8 @@ abstract class AbstractTransport
      * @param string|array|Exception $data
      *
      * @return void
+     *
+     * @throws Exception
      */
     protected function errorHandler( string|array|Exception $data ): void
     {

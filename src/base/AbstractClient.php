@@ -2,13 +2,17 @@
 
 namespace andy87\sdk\client\base;
 
+use andy87\sdk\client\base\interfaces\RequestInterface;
+use andy87\sdk\client\base\modules\AbstractCache;
+use andy87\sdk\client\base\modules\AbstractLogger;
+use andy87\sdk\client\base\modules\AbstractTest;
+use andy87\sdk\client\base\modules\AbstractTransport;
 use Exception;
 use andy87\sdk\client\core\Modules;
 use andy87\sdk\client\core\Container;
-use andy87\sdk\client\core\transport\Request;
 use andy87\sdk\client\base\components\Config;
-use andy87\sdk\client\core\transport\Response;
 use andy87\sdk\client\base\interfaces\ClientInterface;
+use andy87\sdk\client\core\transport\Response;
 
 /**
  * Класс Client
@@ -26,7 +30,7 @@ abstract class AbstractClient implements ClientInterface
     protected Config $config;
 
     /** @var Modules $modules Модули клиента */
-    public Modules $modules;
+    protected Modules $modules;
 
 
 
@@ -41,7 +45,7 @@ abstract class AbstractClient implements ClientInterface
     {
         $this->config = $this->prepareConfig( $config );
 
-        $this->setupModules( $this->config );
+        $this->setupModules( $this->getConfig() );
     }
 
     /**
@@ -85,7 +89,7 @@ abstract class AbstractClient implements ClientInterface
     {
         $containerClass = static::CONTAINER_CLASS;
 
-        $container = new $containerClass( $config->classes );
+        $container = new $containerClass( $config->getRegistryOverrides() );
 
         if ( $container instanceof Container )
         {
@@ -96,17 +100,59 @@ abstract class AbstractClient implements ClientInterface
     }
 
     /**
+     * Возвращает объект конфигурации клиента.
+     *
+     * @param string $id
+     *
+     * @return AbstractTest|AbstractCache|AbstractLogger|AbstractTransport|Container
+     *
+     * @throws Exception
+     */
+    public function getModule( string $id ): AbstractTest|AbstractCache|AbstractLogger|AbstractTransport|Container
+    {
+        return match ($id)
+        {
+            ClientInterface::TEST => $this->modules->getTest(),
+            ClientInterface::CACHE => $this->modules->getCache(),
+            ClientInterface::LOGGER => $this->modules->getLogger(),
+            ClientInterface::TRANSPORT => $this->modules->getTransport(),
+            ClientInterface::CONTAINER => $this->modules->getContainer(),
+            default => throw new Exception( "Module with ID '$id' not found." ),
+        };
+    }
+
+    /**
+     * Возвращает конфигурацию клиента.
+     *
+     * @return Config
+     */
+    public function getConfig(): Config
+    {
+        return $this->config;
+    }
+
+    /**
+     * Возвращает контейнер, используемый клиентом.
+     *
+     * @return Container
+     */
+    public function getContainer(): Container
+    {
+        return $this->modules->getContainer();
+    }
+
+    /**
      * Отправляет запрос к API.
      *
-     * @param Request $request
+     * @param RequestInterface $request
      *
      * @return Response
      *
      * @throws Exception
      */
-    protected function sendRequest( Request $request ): Response
+    protected function sendRequest( RequestInterface $request ): Response
     {
-        return $this->modules->transport->sendRequest( $request );
+        return $this->modules->getTransport()->sendRequest( $request );
     }
 
     /**
@@ -115,10 +161,12 @@ abstract class AbstractClient implements ClientInterface
      * @param string|array $data
      *
      * @return void
+     *
+     * @throws Exception
      */
     public function errorHandler( string|array $data ): void
     {
-        if ( $logger = $this->modules->logger )
+        if ( $logger = $this->modules->getLogger() )
         {
             $logger->errorHandler( $data );
         }

@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\tests;
 
+use andy87\sdk\client\base\interfaces\ClientInterface;
 use andy87\sdk\client\SdkClient;
 use Exception;
 
@@ -21,16 +22,22 @@ abstract class SdkClientTest
      */
     public string $promptClass;
 
-
+    /**
+     * @var SdkClient $sdkClient Экземпляр клиента SDK.
+     */
+    private SdkClient $sdkClient;
 
     /**
      *  Конструктор класса SdkClientTest.
      *
      * @param SdkClient $sdkClient
+     *
+     * @throws Exception
      */
-    public function __construct(
-        private SdkClient $sdkClient
-    ) { }
+    public function __construct( SdkClient $sdkClient )
+    {
+        $this->sdkClient = $sdkClient;
+    }
 
     /**
      * Запускает тесты для проверки работы клиента SDK.
@@ -41,7 +48,7 @@ abstract class SdkClientTest
      */
     public function run(): void
     {
-        $result = $this->sdkClient->modules->test->run( $this->promptClass );
+        $result = $this->sdkClient->getModule( ClientInterface::TEST )->run();
 
         $this->displayResult( $this->promptClass, $result );
     }

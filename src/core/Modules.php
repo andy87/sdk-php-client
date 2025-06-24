@@ -3,6 +3,7 @@
 namespace andy87\sdk\client\core;
 
 use Exception;
+use andy87\sdk\client\base\modules\AbstractTest;
 use andy87\sdk\client\base\modules\AbstractCache;
 use andy87\sdk\client\base\modules\AbstractLogger;
 use andy87\sdk\client\base\modules\AbstractTransport;
@@ -16,30 +17,22 @@ use andy87\sdk\client\base\interfaces\ClientInterface;
  */
 class Modules
 {
-    /**
-     * @var Container $container Контейнер для хранения зависимостей
-     */
-    public Container $container;
+    /** @var Container $container Контейнер для хранения зависимостей */
+    protected Container $container;
 
-    /**
-     * @var AbstractTransport $transport Интерфейс для отправки запросов к API
-     */
-    public AbstractTransport $transport;
+    /** @var AbstractTransport $transport Интерфейс для отправки запросов к API */
+    protected AbstractTransport $transport;
 
-    /**
-     * @var ?AbstractCache $cache Интерфейс для работы с кэшем
-     */
-    public ?AbstractCache $cache;
 
-    /**
-     * @var ?AbstractTest $test Интерфейс для тестирования
-     */
-    public ?AbstractTest $test = null;
 
-    /**
-     * @var ?AbstractLogger $test Интерфейс для тестирования
-     */
-    public ?AbstractLogger $logger = null;
+    /** @var null|AbstractCache $cache Интерфейс для работы с кэшем */
+    protected ?AbstractCache $cache;
+
+    /** @var null|AbstractTest $test Интерфейс для тестирования */
+    protected ?AbstractTest $test = null;
+
+    /** @var null|AbstractLogger $test Интерфейс для тестирования */
+    protected ?AbstractLogger $logger = null;
 
 
 
@@ -54,10 +47,97 @@ class Modules
     {
         $this->container = $container;
 
-        $this->transport = $this->container->get(ClientInterface::OPERATOR);
+        $this->transport = $this->getContainer()->get(ClientInterface::TRANSPORT);
 
-        $this->cache = $this->container->get(ClientInterface::CACHE);
+        $this->cache = $this->getContainer()->get(ClientInterface::CACHE);
 
-        $this->test = $this->container->get(ClientInterface::TEST);
+        $this->test = $this->getContainer()->get(ClientInterface::TEST);
     }
+
+    /**
+     * Получает контейнер, содержащий зависимости клиента.
+     *
+     * @return Container
+     */
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
+
+    /**
+     * Получает интерфейс для работы с отправкой запросов
+     *
+     * @return AbstractTransport
+     */
+    public function getTransport(): AbstractTransport
+    {
+        return $this->transport;
+    }
+
+    /**
+     * Получает интерфейс для работы с кэшем
+     *
+     * @return AbstractCache|null
+     */
+    public function getCache(): ?AbstractCache
+    {
+        return $this->cache;
+    }
+
+    /**
+     * Получает интерфейс для тестирования
+     *
+     * @return AbstractTest|null
+     */
+    public function getTest(): ?AbstractTest
+    {
+        return $this->test;
+    }
+
+    /**
+     * Получает интерфейс для логирования
+     *
+     * @return AbstractLogger|null
+     */
+    public function getLogger(): ?AbstractLogger
+    {
+        return $this->logger;
+    }
+
+    /**
+     * Устанавливает интерфейс для работы с кэшем
+     *
+     * @param AbstractCache $cache
+     *
+     * @return void
+     */
+    public function setCache( AbstractCache $cache ): void
+    {
+        if ( !$this->cache ) $this->cache = $cache;
+    }
+
+    /**
+     * Устанавливает интерфейс для логирования
+     *
+     * @param AbstractLogger $logger
+     *
+     * @return void
+     */
+    public function setLogger( AbstractLogger $logger ): void
+    {
+        if ( !$this->logger ) $this->logger = $logger;
+    }
+
+    /**
+     * Устанавливает интерфейс для тестирования
+     *
+     * @param AbstractTest $test
+     *
+     * @return void
+     */
+    public function setTest( AbstractTest $test ): void
+    {
+        if ( !$this->test ) $this->test = $test;
+    }
+
 }

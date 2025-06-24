@@ -42,14 +42,14 @@ abstract class AbstractCache
      *
      * @return bool
      */
-    abstract public function setData( Account $account, array $data ): bool;
+    abstract public function setData( Account $account, mixed $data ): bool;
 
     /**
      * Получает данные из кэша для указанного аккаунта.
      *
      * @param Account $account
      *
-     * @return ?array
+     * @return mixed
      */
-    abstract public function getData( Account $account ): ?array;
+    abstract public function getData( Account $account ): mixed;
 }

@@ -17,11 +17,27 @@ use andy87\sdk\client\base\interfaces\RequestInterface;
  */
 class Request implements RequestInterface
 {
+    /**
+     * Клиент, используемый для отправки запроса.
+     *
+     * @var AbstractClient $client
+     */
     protected AbstractClient $client;
 
+    /**
+     * Промпт, содержащий данные API-запроса.
+     *
+     * @var Prompt $prompt
+     */
     protected Prompt $prompt;
 
+    /**
+     * Объект запроса, содержащий данные HTTP-запроса.
+     *
+     * @var Query $query
+     */
     protected Query $query;
+
 
 
     /**
@@ -71,9 +87,26 @@ class Request implements RequestInterface
      */
     private function constructQuery( string $method, string $endpoint, array $data, array $headers ): Query
     {
-        $queryClass = $this->client->modules->container->getClassRegistry( Query::class );
+        $queryClass = $this->client->getContainer()->getClassRegistry( Query::class );
 
-        return new $queryClass( $method, $endpoint, $data, $headers );
+        $query = new $queryClass( $method, $endpoint, $data, $headers );
+
+        return $this->prepareAuthorization( $this->client, $this->prompt, $query );
+    }
+
+    /**
+     * Подготавливает авторизацию для запроса.
+     *
+     * @throws Exception
+     */
+    private function prepareAuthorization( AbstractClient $client, Prompt $prompt, Query $query ): Query
+    {
+        foreach ( $prompt::AUTH as $authorization )
+        {
+            $query = (new $authorization())->run( $client, $query );
+        }
+
+        return $query;
     }
 
     /**
@@ -83,7 +116,7 @@ class Request implements RequestInterface
      */
     protected function getHeaders(): array
     {
-        $headers = [];
+        $headers = $this->prompt->getHeaders();
 
         if ( $contentType = $this->prompt->getContentType()) {
             $headers['Content-Type'] = $contentType;

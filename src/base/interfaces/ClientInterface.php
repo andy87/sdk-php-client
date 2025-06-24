@@ -14,23 +14,31 @@ use andy87\sdk\client\base\components\Account;
  */
 interface ClientInterface
 {
-    public const REQUEST = 'request';
-    public const RESPONSE = 'response';
-    public const SCHEMA = 'schema';
-    public const OPERATOR = 'operator';
-    public const CACHE = 'cache';
-    public const CLIENT = 'client';
-    public const LOGGER = 'logger';
+
+    public const CONTAINER = 'container';
+
     public const ACCOUNT = 'account';
     public const CONFIG = 'config';
+
+    public const CLIENT = 'client';
+
+    public const CACHE = 'cache';
+    public const LOGGER = 'logger';
     public const TEST = 'test';
 
+    public const PROMPT = 'prompt';
+    public const SCHEMA = 'schema';
+
+    public const TRANSPORT = 'transport';
+    public const REQUEST = 'request';
+    public const RESPONSE = 'response';
+    public const URL = 'url';
 
 
     /**
      * Собирает конечный URL для API запроса.
      *
-     * @param string|int $path
+     * @param Prompt $prompt
      *
      * @return string
      */

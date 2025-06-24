@@ -17,13 +17,13 @@ class Url
     /** @var string $host Хост */
     protected string $host;
 
-    /** @var ?int $port Порт */
+    /** @var null|int $port Порт */
     protected ?int $port = null;
 
-    /** @var ?string $prefix префикс `endpoint'a` добавляемый после `host`  */
+    /** @var null|string $prefix префикс `endpoint'a` добавляемый после `host`  */
     protected ?string $prefix = null;
 
-    /** @var ?string $path Путь к ресурсу, добавляемый после префикса */
+    /** @var null|string $path Путь к ресурсу, добавляемый после префикса */
     protected ?string $path = null;
 
 
@@ -60,14 +60,14 @@ class Url
         }
 
         if ($this->prefix !== null) {
-            $fullPath .= '/' . trim($this->prefix, '/');
+            $fullPath .= ( '/' . $this->prefix );
         }
 
         if ($this->path !== null) {
-            $fullPath .= '/' . trim($this->path, '/');
+            $fullPath .= ( '/' . $this->path );
         }
 
-        return $fullPath;
+        return str_replace('//', '/', $fullPath);
     }
 
     /**

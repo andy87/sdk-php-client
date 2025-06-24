@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\base\components;
 
+use andy87\sdk\client\base\interfaces\AuthorizationInterface;
 use andy87\sdk\client\helpers\Method;
 
 /**
@@ -13,15 +14,13 @@ use andy87\sdk\client\helpers\Method;
  */
 abstract class Prompt
 {
-    /** @var true Статус использования префикса конфига */
+    /** @var bool Статус использования префикса конфига */
     public const USE_PREFIX = true;
 
-    /**
-     * Флаг, указывающий, является ли запрос приватным (требует авторизации).
-     *
-     * @var bool $isPrivate
-     */
-    protected bool $isPrivate = false;
+    /** @var array|AuthorizationInterface[] Применяемые для авторизации классы */
+    public const AUTH = [];
+
+
 
     /**
      * Схема запроса, определяющая структуру и правила валидации.
@@ -36,7 +35,7 @@ abstract class Prompt
      *
      * @var string $method
      */
-    protected string $method = Method::GET;
+    protected string $method;
 
     /**
      * Путь запроса, указывающий на конечную точку API.
@@ -57,7 +56,7 @@ abstract class Prompt
      * Тип контента запроса, например, 'application/json'.
      *  Может быть null, если тип не задан.
      *
-     * @var ?string $contentType
+     * @var null|string $contentType
      */
     protected ?string $contentType = null;
 
@@ -104,16 +103,6 @@ abstract class Prompt
     }
 
     /**
-     * Возвращает значение, является ли запрос приватным( требует авторизации).
-     *
-     * @return bool
-     */
-    public function isPrivate(): bool
-    {
-        return $this->isPrivate;
-    }
-
-    /**
      * Возвращает заголовки запроса.
      *
      * @return array
@@ -131,6 +120,15 @@ abstract class Prompt
      */
     public function release(): ?array
     {
-        return get_object_vars($this) ?? null;
+        $array = get_object_vars($this) ?? null;
+
+        if($array)
+        {
+            $array = array_filter($array, function ($value) {
+                return $value !== null;
+            });
+        }
+
+        return $array;
     }
 }
