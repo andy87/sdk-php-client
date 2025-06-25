@@ -15,6 +15,13 @@ use Psr\Container\ContainerInterface;
 class Container implements ContainerInterface
 {
     /**
+     * @var string $REGISTRY_CLASS Класс реестра, который будет использоваться для хранения классов.
+     */
+    protected const REGISTRY_CLASS = ClassRegistry::class;
+
+
+
+    /**
      * @var ClassRegistry $classRegistry Объект содержащий список используемых классов.
      */
     private ClassRegistry $classRegistry;
@@ -29,11 +36,13 @@ class Container implements ContainerInterface
     /**
      * Конструктор
      *
-     * @param ClassRegistry $classRegistry
+     * @param array $registryMapping
      */
-    public function __construct( ClassRegistry $classRegistry )
+    public function __construct( array $registryMapping )
     {
-        $this->classRegistry = $classRegistry;
+        $classRegistry = static::REGISTRY_CLASS;
+
+        $this->classRegistry = new $classRegistry($registryMapping);
     }
 
     /**
