@@ -50,12 +50,12 @@ class ClassRegistry
     /**
      * Конструктор
      *
-     * @param null|array $map Массив для хранения классов и их соответствующих ID.
+     * @param array $map Массив для хранения классов и их соответствующих ID.
      * Ключ - это ID, значение - это имя класса или вызываемый объект.
      */
-    public function __construct( ?array $map = null )
+    public function __construct( array $map = [] )
     {
-        $this->map = $map ?? static::MAP;
+        $this->map = array_merge(static::MAP, $map );
     }
 
     /**
