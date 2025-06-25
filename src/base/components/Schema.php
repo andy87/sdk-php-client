@@ -76,7 +76,7 @@ abstract class Schema
                     }
                 } else {
 
-                    $this->_log[] = sprintf( static::ERROR_CLASS_NOT_FOUND, $className, $key, static::class );
+                    $this->addLog(sprintf( static::ERROR_CLASS_NOT_FOUND, $className, $key, static::class ));
                 }
 
             } elseif ( is_string( $params ) && class_exists( $params ) ) {
@@ -88,7 +88,7 @@ abstract class Schema
 
         } else {
 
-            $this->_log[] = sprintf( static::ERROR_PROPERTY_NOT_FOUND, $key, static::class );
+            $this->addLog(sprintf( static::ERROR_PROPERTY_NOT_FOUND, $key, static::class ));
         }
     }
 
