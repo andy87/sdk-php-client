@@ -58,13 +58,36 @@ class Modules
 
         $this->container = $container;
 
-        $this->cache = $this->getContainer()->get( ClientInterface::CACHE );
-
-        $this->test = $this->getContainer()->get( ClientInterface::TEST );
-
         $this->transport = $this->constructTransport($client);
 
+        $this->cache = $this->constructCache($client);
+
         $this->mockManager = $this->constructMockManager();
+
+        $this->test = $this->getContainer()->get( ClientInterface::TEST );
+    }
+
+    /**
+     * Создает кэш для хранения данных.
+     *
+     * @param AbstractClient $client
+     *
+     * @return null|AbstractCache
+     *
+     * @throws Exception
+     */
+    private function constructCache(AbstractClient $client ): ?AbstractCache
+    {
+        $cacheClass = $this->getContainer()->getClassRegistry(ClientInterface::CACHE);
+
+        if ( $cacheClass )
+        {
+            $account = $client->getConfig()->getAccount();
+
+            return new $cacheClass( $account );
+        }
+
+        return null;
     }
 
     /**
