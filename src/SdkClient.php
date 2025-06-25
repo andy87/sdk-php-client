@@ -71,7 +71,7 @@ abstract class SdkClient extends AbstractClient
                     $log['message'] = 'Schema validation error';
                     $log['schema'] = [
                         'object' => $schema,
-                        '_errors' => $schema->getErrors()
+                        '_log' => $schema->getLog()
                     ];
                 }
 

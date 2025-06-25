@@ -103,7 +103,7 @@ abstract class Schema
     /**
      * Получает ошибки схемы
      */
-    public function getInfo(): ?array
+    public function getLog(): ?array
     {
         return $this->_log;
     }
@@ -113,7 +113,7 @@ abstract class Schema
      *
      * @param string|array $log
      */
-    public function addLog( string|array $log )
+    public function addLog( string|array $log ): void
     {
         $this->_log[] = $log;
     }
