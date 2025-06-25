@@ -53,7 +53,7 @@ class Url
      */
     public function getFullPath(): string
     {
-        $fullPath = $this->protocol . '://' . $this->host;
+        $fullPath = $this->host;
 
         if ($this->port !== null) {
             $fullPath .= ':' . $this->port;
@@ -67,7 +67,7 @@ class Url
             $fullPath .= ( '/' . $this->path );
         }
 
-        return str_replace('//', '/', $fullPath);
+        return $this->protocol . '://' . str_replace('//', '/', $fullPath);
     }
 
     /**

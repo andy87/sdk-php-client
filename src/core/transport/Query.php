@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\core\transport;
 
+use andy87\sdk\client\helpers\ContentType;
 use andy87\sdk\client\helpers\Method;
 
 /**
@@ -43,15 +44,18 @@ class Query
     /**
      * Возвращает URL-адрес конечной точки API
      *
+     * @param string<Method> $method
+     * @param string<ContentType> $contentType
+     *
      * @return string
      */
-    public function getEndpoint(): string
+    public function getEndpoint( string $method, string $contentType): string
     {
         $url = $this->endpoint;
 
         $url = rtrim($url, '?&');
 
-        if ( $this->method === Method::GET )
+        if ( $method === Method::GET || $contentType === ContentType::X_WWW_FORM_URLENCODED )
         {
             $data = $this->getData();
 

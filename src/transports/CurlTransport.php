@@ -19,7 +19,11 @@ use andy87\sdk\client\core\transport\{ Query, Response };
 final class CurlTransport extends AbstractTransport
 {
     public array $options = [
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     ];
 
 
@@ -56,12 +60,19 @@ final class CurlTransport extends AbstractTransport
 
             $this->handleData( $query );
 
+            $url = $query->getEndpoint( $query->getMethod(), $request->getPrompt()->getContentType() );
+
             $this->options[CURLOPT_HTTPHEADER] = $query->getHeaders();
-            $this->options[CURLOPT_URL] = $query->getEndpoint();
+            $this->options[CURLOPT_URL] = $url;
 
             curl_setopt_array($curl, $this->options);
 
-            $content = curl_exec($curl) ?: null;
+            $content = curl_exec($curl);
+
+            curl_close($curl);
+
+            exit( PHP_EOL . $url . PHP_EOL . $content . PHP_EOL );
+
             $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE) ?: null;
             $curlInfo = $this->handleCustomParams( $curl, $query );
 
@@ -91,9 +102,6 @@ final class CurlTransport extends AbstractTransport
             case Method::PUT:
             case Method::POST:
             case Method::PATCH:
-
-                $this->options[CURLOPT_POST] = true;
-
                 $data = $query->getData();
 
                 if ( !empty($data) )
@@ -112,10 +120,7 @@ final class CurlTransport extends AbstractTransport
                 ]);
         }
 
-        if ( in_array( $method, [Method::PUT, Method::PATCH, Method::DELETE] ) )
-        {
-            $this->options[CURLOPT_CUSTOMREQUEST] = $method;
-        }
+        $this->options[CURLOPT_CUSTOMREQUEST] = $method;
     }
 
     /**

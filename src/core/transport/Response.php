@@ -92,7 +92,7 @@ class Response implements ResponseInterface
             $this->result = json_decode( $this->content, true );
         }
 
-        return $this->result;
+        return $this->result ?? [];
     }
 
     /**
@@ -122,7 +122,7 @@ class Response implements ResponseInterface
      */
     public function isOk(): bool
     {
-        return $this->statusCode AND ( $this->statusCode >= 200 && $this->statusCode < 300 );
+        return $this->statusCode;
     }
 
     /**

@@ -40,49 +40,35 @@ abstract class SdkClient extends AbstractClient
 
         $response = $this->sendRequest( $request );
 
-        $log = [
-            'method' => __METHOD__,
-            'func_get_args' => func_get_args(),
-            'request' => $request,
-            'send response' => $response
-        ];
-
         $response = $this->handleResponse( $request, $response );
-
-        $log['handleResponse'] = $response;
 
         if ( $response->isOk() || $prompt::DEBUG )
         {
             if ( $schema = $this->constructSchema( $request, $response ) )
             {
-                if ( $schema->validate( $prompt ) || $prompt::DEBUG )
+                if ( !$schema->validate( $prompt ) || $prompt::DEBUG )
                 {
-                    if ($prompt::DEBUG)
-                    {
-                        $schema->addLog([
-                            'response' => $response
-                        ]);
-                    }
-
-                    return $schema;
-
-                } else {
-
-                    $log['message'] = 'Schema validation error';
-                    $log['schema'] = [
-                        'object' => $schema,
-                        '_log' => $schema->getLog()
-                    ];
+                    $schema->addLog([
+                        'response' => $response
+                    ]);
                 }
+
+                return $schema;
 
             } else {
 
-                $log['message'] = 'Schema class not found or invalid response';
+                $log = [
+                    'message' => 'Schema class not found or invalid response',
+                    'response' => $response,
+                ];
             }
 
         } else {
 
-            $log['message'] = 'Response error (is not OK). Status code: ' . $response->getStatusCode();
+            $log = [
+                'message' => 'Response error (is not OK). Status code: ' . $response->getStatusCode(),
+                'response' => $response,
+            ];
         }
 
         $this->errorHandler($log);
@@ -203,6 +189,8 @@ abstract class SdkClient extends AbstractClient
      * @param Response $response
      *
      * @return ?Schema
+     *
+     * @throws Exception
      */
     protected function constructSchema( RequestInterface $request, Response $response ): ?Schema
     {
@@ -210,13 +198,22 @@ abstract class SdkClient extends AbstractClient
 
         if ( class_exists( $schemaClassName ) )
         {
-            if ( $result = $response->getResult() )
-            {
-                /** @var Schema $schema */
-                $schema = new $schemaClassName( $result );
+            $result = $response->getResult();
 
-                return $schema;
-            }
+            /** @var Schema $schema */
+            $schema = new $schemaClassName( $result );
+
+            return $schema;
+
+        } else {
+            $this->errorHandler([
+                __METHOD__ . ':' . __LINE__ => [
+                    'error' => 'Schema class not found',
+                    'request' => $request,
+                    'response' => $response,
+                    'schemaClassName' => $schemaClassName
+                ]
+            ]);
         }
 
         return null;
