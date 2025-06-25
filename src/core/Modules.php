@@ -58,13 +58,29 @@ class Modules
 
         $this->container = $container;
 
-        $this->transport = $this->getContainer()->get( ClientInterface::TRANSPORT );
-
         $this->cache = $this->getContainer()->get( ClientInterface::CACHE );
 
         $this->test = $this->getContainer()->get( ClientInterface::TEST );
 
+        $this->transport = $this->constructTransport($client);
+
         $this->mockManager = $this->constructMockManager();
+    }
+
+    /**
+     * Создает транспортёр для отправки запросов к API.
+     *
+     * @param AbstractClient $client
+     *
+     * @return AbstractTransport
+     *
+     * @throws Exception
+     */
+    private function constructTransport(AbstractClient $client): AbstractTransport
+    {
+        $transportClass = $this->getContainer()->getClassRegistry(ClientInterface::TEST );
+
+        return new $transportClass( $client );
     }
 
     /**

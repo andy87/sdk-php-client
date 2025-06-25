@@ -2,14 +2,12 @@
 
 namespace andy87\sdk\client\transports;
 
-use andy87\sdk\client\base\interfaces\RequestInterface;
 use Exception;
 use CurlHandle;
 use andy87\sdk\client\helpers\Method;
-use andy87\sdk\client\core\transport\Query;
-use andy87\sdk\client\core\transport\Request;
-use andy87\sdk\client\core\transport\Response;
 use andy87\sdk\client\base\modules\AbstractTransport;
+use andy87\sdk\client\base\interfaces\RequestInterface;
+use andy87\sdk\client\core\transport\{ Query, Response };
 
 /**
  * Класс CurlOperator
