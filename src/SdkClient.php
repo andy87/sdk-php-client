@@ -5,8 +5,9 @@ namespace andy87\sdk\client;
 use Exception;
 use andy87\sdk\client\core\transport\{Request, Url, Response};
 use andy87\sdk\client\base\AbstractClient;
+use andy87\sdk\client\base\modules\AbstractMock;
 use andy87\sdk\client\base\components\{ Account, Config, Prompt, Schema };
-use andy87\sdk\client\base\interfaces\{ ClientInterface, RequestInterface };
+use andy87\sdk\client\base\interfaces\{ClientInterface, MockInterface, RequestInterface};
 
 /**
  * Класс SdkClient
@@ -28,21 +29,14 @@ abstract class SdkClient extends AbstractClient
      */
     public function send( Prompt $prompt ): ?Schema
     {
-        if ( $prompt->mock )
-        {
-            return $prompt->mock->response();
-
-        } else {
-
-            if ( $mock = $this->modules->getMockManager() )
-            {
-                $promptClass = $prompt::class;
-
-                return $mock->get( $promptClass );
-            }
-        }
-
         $request = $this->constructRequest( $prompt );
+
+        $mock = $request->getPrompt()->getMock();
+
+        if( $mock && $mock::BREAKPOINT == $mock::BREAKPOINT_REQUEST )
+        {
+            return $mock->getData();
+        }
 
         $response = $this->sendRequest( $request );
 
@@ -100,10 +94,43 @@ abstract class SdkClient extends AbstractClient
     {
         $requestClassName = $this->modules->getContainer()->getClassRegistry( ClientInterface::REQUEST );
 
-        return $this->prepareAuthentication(
+        $request = $this->prepareAuthentication(
             $prompt,
             new $requestClassName( $this, $prompt )
         );
+
+        if ( $mock = $this->mockHandle($prompt) )
+        {
+            $request->getPrompt()->setMock($mock);
+        }
+
+        return $request;
+    }
+
+    /**
+     * Создает мок-обработчик для запроса, если он указан в Prompt.
+     *
+     * @param Prompt $prompt
+     *
+     * @return null|AbstractMock
+     */
+    private function mockHandle( Prompt $prompt ): ?AbstractMock
+    {
+        if ( !$prompt->getMock() )
+        {
+            if ( $moduleMock = $this->modules->getMockManager() )
+            {
+                $mockClass = $moduleMock->get( $prompt::class );
+
+                if ( class_exists( $mockClass ) )
+                {
+                    /** @var AbstractMock $mock */
+                    return new $mockClass();
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -2,11 +2,10 @@
 
 namespace andy87\sdk\client\base\modules;
 
-use andy87\sdk\client\base\interfaces\RequestInterface;
 use Exception;
 use andy87\sdk\client\base\AbstractClient;
-use andy87\sdk\client\core\transport\Request;
 use andy87\sdk\client\core\transport\Response;
+use andy87\sdk\client\base\interfaces\RequestInterface;
 
 /**
  * Класс Operator

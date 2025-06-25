@@ -2,8 +2,8 @@
 
 namespace andy87\sdk\client\base\components;
 
+use andy87\sdk\client\base\modules\AbstractMock;
 use andy87\sdk\client\base\interfaces\AuthorizationInterface;
-use andy87\sdk\client\base\interfaces\MockInterface;
 
 /**
  * Класс Prompt
@@ -63,9 +63,9 @@ abstract class Prompt
     /**
      * Мок запроса, если мок задан.
      *
-     * @var null|MockInterface $mock
+     * @var null|AbstractMock $mock
      */
-    public ?MockInterface $mock = null;
+    protected ?AbstractMock $mock = null;
 
 
 
@@ -137,5 +137,25 @@ abstract class Prompt
         }
 
         return $array;
+    }
+
+    /**
+     * Устанавливает мок запроса.
+     *
+     * @param AbstractMock $mock
+     */
+    public function setMock(AbstractMock $mock): void
+    {
+        if (!$this->mock) $this->mock = $mock;
+    }
+
+    /**
+     * Возвращает мок запроса, если он установлен.
+     *
+     * @return ?AbstractMock
+     */
+    public function getMock(): ?AbstractMock
+    {
+        return $this->mock;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\base\interfaces;
 
+use andy87\sdk\client\base\components\Prompt;
 use andy87\sdk\client\core\transport\Query;
 
 /**
@@ -19,7 +20,16 @@ interface RequestInterface
     public function setupQuery():void;
 
     /**
+     * Возвращает объект Query, который содержит информацию о запросе.
+     *
      * @return Query
      */
     public  function getQuery(): Query;
+
+    /**
+     * Возвращает объект Prompt, который содержит информацию о запросе.
+     *
+     * @return Prompt
+     */
+    public  function getPrompt(): Prompt;
 }

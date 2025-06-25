@@ -158,6 +158,13 @@ abstract class AbstractClient implements ClientInterface
      */
     protected function sendRequest( RequestInterface $request ): Response
     {
+        $mock = $request->getPrompt()->getMock();
+
+        if( $mock && $mock::BREAKPOINT == $mock::BREAKPOINT_RESPONSE )
+        {
+            return $mock->getData();
+        }
+
         return $this->modules->getTransport()->sendRequest( $request );
     }
 

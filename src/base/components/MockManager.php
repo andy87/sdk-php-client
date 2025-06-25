@@ -3,6 +3,7 @@
 namespace andy87\sdk\client\base\components;
 
 use Exception;
+use andy87\sdk\client\base\modules\AbstractMock;
 
 /**
  * Класс для реализации моков
@@ -12,7 +13,7 @@ use Exception;
 class MockManager
 {
     /**
-     * @var array<string, Schema> Mock map
+     * @var AbstractMock[]|array<string, class-string<AbstractMock>> Mock map
      */
     public array $map;
 
@@ -45,9 +46,9 @@ class MockManager
     /**
      * @param string $promptClass
      *
-     * @return ?Schema
+     * @return ?AbstractMock
      */
-    public function get(string $promptClass ): ?Schema
+    public function get( string $promptClass ): ?AbstractMock
     {
         return $this->map[$promptClass] ?? null;
     }
