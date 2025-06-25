@@ -24,16 +24,16 @@ class ClassRegistry
      * @var array Массив для хранения классов и их соответствующих ID
      */
     public const MAP = [
+        ClientInterface::ACCOUNT => Account::class,
+        ClientInterface::TRANSPORT => CurlTransport::class,
         ClientInterface::SCHEMA => Schema::class,
         ClientInterface::CLIENT => SdkClient::class,
         ClientInterface::REQUEST => Request::class,
         ClientInterface::RESPONSE => Response::class,
-        ClientInterface::TRANSPORT => CurlTransport::class,
-        ClientInterface::CACHE => AbstractCache::class,
-        ClientInterface::TEST => AbstractTest::class,
-        ClientInterface::ACCOUNT => Account::class,
-        ClientInterface::LOGGER => AbstractLogger::class,
         ClientInterface::MOCK => MockManager::class,
+        ClientInterface::CACHE => null,
+        ClientInterface::TEST => null,
+        ClientInterface::LOGGER => null,
     ];
 
 
