@@ -8,7 +8,7 @@ use andy87\sdk\client\transports\CurlTransport;
 use andy87\sdk\client\base\components\MockManager;
 use andy87\sdk\client\base\interfaces\ClientInterface;
 use andy87\sdk\client\base\components\{ Schema, Account };
-use andy87\sdk\client\core\transport\{ Request, Response };
+use andy87\sdk\client\core\transport\{Query, Request, Response};
 use andy87\sdk\client\base\modules\{ AbstractTest, AbstractCache, AbstractLogger };
 
 /**
@@ -28,6 +28,7 @@ class ClassRegistry
         ClientInterface::TRANSPORT => CurlTransport::class,
         ClientInterface::SCHEMA => Schema::class,
         ClientInterface::CLIENT => SdkClient::class,
+        ClientInterface::QUERY => Query::class,
         ClientInterface::REQUEST => Request::class,
         ClientInterface::RESPONSE => Response::class,
         ClientInterface::MOCK => MockManager::class,
@@ -81,5 +82,15 @@ class ClassRegistry
     public function has( string $id ): bool
     {
         return isset($this->map[$id]);
+    }
+
+    /**
+     * Получает все классы, зарегистрированные в контейнере.
+     *
+     * @return array|string[]
+     */
+    public function getMap()
+    {
+        return $this->map;
     }
 }

@@ -3,11 +3,11 @@
 namespace andy87\sdk\client;
 
 use Exception;
-use andy87\sdk\client\core\transport\{Request, Url, Response};
 use andy87\sdk\client\base\AbstractClient;
 use andy87\sdk\client\base\modules\AbstractMock;
 use andy87\sdk\client\base\components\{ Account, Config, Prompt, Schema };
 use andy87\sdk\client\base\interfaces\{ClientInterface, RequestInterface};
+use andy87\sdk\client\core\transport\{Request, Url, Response};
 
 /**
  * Класс SdkClient
@@ -39,6 +39,12 @@ abstract class SdkClient extends AbstractClient
         }
 
         $response = $this->sendRequest( $request );
+
+        print_r([
+            __METHOD__ . ':' . __LINE__,
+            'response' => $response
+        ]);
+        exit();
 
         $log = [
             'method' => __METHOD__,
@@ -94,17 +100,22 @@ abstract class SdkClient extends AbstractClient
     {
         $requestClassName = $this->modules->getContainer()->getClassRegistry( ClientInterface::REQUEST );
 
-        $request = $this->prepareAuthentication(
-            $prompt,
-            new $requestClassName( $this, $prompt )
-        );
-
-        if ( $mock = $this->mockHandle($prompt) )
+        if ( $requestClassName )
         {
-            $request->getPrompt()->setMock($mock);
+            $request = $this->prepareAuthentication(
+                $prompt,
+                new $requestClassName( $this, $prompt )
+            );
+
+            if ( $mock = $this->mockHandle($prompt) )
+            {
+                $request->getPrompt()->setMock($mock);
+            }
+            
+            return $request;
         }
 
-        return $request;
+        throw new Exception( 'Request not found' );
     }
 
     /**
@@ -253,7 +264,7 @@ abstract class SdkClient extends AbstractClient
 
             } else {
 
-                $response = new Response( $request, 0, null);
+                $response = new Response( $request, 0, null );
                 $response->addError( 'Authorization failed' );
 
                 $errorLog = [

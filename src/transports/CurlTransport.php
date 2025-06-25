@@ -48,7 +48,7 @@ final class CurlTransport extends AbstractTransport
                 'message' => $error,
             ]);
 
-            $response = new Response( $request,0);
+            $response = new Response( $request, 0 );
 
             $response->addError($error);
 
@@ -61,16 +61,15 @@ final class CurlTransport extends AbstractTransport
 
             curl_setopt_array($curl, $this->options);
 
-            $response = new Response(
-                curl_getinfo($curl, CURLINFO_HTTP_CODE) ?: 0,
-                curl_exec($curl) ?: null
-            );
-
+            $content = curl_exec($curl) ?: null;
+            $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE) ?: null;
             $curlInfo = $this->handleCustomParams( $curl, $query );
+
+            $response = new Response( $request, $statusCode, $content );
 
             curl_close($curl);
 
-            $response->setCustomParams( $curlInfo );
+            if ( !empty($curlInfo)) $response->setCustomParams( $curlInfo );
         }
 
         return $response;

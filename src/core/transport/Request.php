@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\core\transport;
 
+use andy87\sdk\client\base\interfaces\ClientInterface;
 use Exception;
 use andy87\sdk\client\base\AbstractClient;
 use andy87\sdk\client\base\components\Prompt;
@@ -88,13 +89,25 @@ class Request implements RequestInterface
      */
     private function constructQuery( string $method, string $endpoint, array $data, array $headers ): Query
     {
-        $queryClass = $this->client->getContainer()->getClassRegistry( Query::class );
+        $queryClass = $this->client->getContainer()->getClassRegistry( ClientInterface::QUERY );
 
-        $query = new $queryClass( $method, $endpoint, $data, $headers );
+        if ( $queryClass )
+        {
+            if ( class_exists( $queryClass ) )
+            {
+                $query = new $queryClass( $method, $endpoint, $data, $headers );
 
-        $this->auth( $this->client, $this->prompt, $query );
+                $this->auth( $this->client, $this->prompt, $query );
 
-        return $query;
+                return $query;
+            }
+
+        } else {
+
+            throw new Exception( "Класс `ClientInterface::QUERY` не указан в контейнере." );
+        }
+
+        throw new Exception( "Класс запроса $queryClass не существует." );
     }
 
     /**

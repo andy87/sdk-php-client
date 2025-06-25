@@ -38,18 +38,18 @@ abstract class AbstractCache
      * Записывает данные в кэш для указанного аккаунта.
      *
      * @param Account $account
-     * @param array $data
+     * @param string $data
      *
      * @return bool
      */
-    abstract public function setData( Account $account, mixed $data ): bool;
+    abstract public function setData( Account $account, string $data ): bool;
 
     /**
      * Получает данные из кэша для указанного аккаунта.
      *
      * @param Account $account
      *
-     * @return mixed
+     * @return string
      */
-    abstract public function getData( Account $account ): mixed;
+    abstract public function getData( Account $account ): string;
 }

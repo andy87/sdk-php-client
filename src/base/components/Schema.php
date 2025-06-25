@@ -60,7 +60,7 @@ abstract class Schema
     {
         if ( property_exists( $this, $key ) )
         {
-            $params = static::MAPPING[$key];
+            $params = static::MAPPING[$key] ?? null;
 
             if ( is_array( $params ) && is_array( $data ) )
             {

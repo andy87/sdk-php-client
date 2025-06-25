@@ -28,6 +28,7 @@ interface ClientInterface
     public const PROMPT = 'prompt';
     public const SCHEMA = 'schema';
 
+    public const QUERY = 'query';
     public const TRANSPORT = 'transport';
     public const REQUEST = 'request';
     public const RESPONSE = 'response';

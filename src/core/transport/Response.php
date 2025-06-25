@@ -47,10 +47,10 @@ class Response implements ResponseInterface
      * Response constructor.
      *
      * @param Request $request
-     * @param int $statusCode
+     * @param ?int $statusCode
      * @param ?string $content
      */
-    public function __construct( Request $request, int $statusCode, ?string $content = null )
+    public function __construct( Request $request, ?int $statusCode, ?string $content = null )
     {
         $this->request = $request;
 

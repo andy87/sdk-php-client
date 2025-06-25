@@ -58,7 +58,11 @@ abstract class Config
     {
         $this->account = $account;
 
-        $this->registryOverrides = array_merge(ClassRegistry::MAP, $classRegistry );
+        $this->registryOverrides = array_merge(
+            ClassRegistry::MAP,
+            $this->registryOverrides,
+            $classRegistry
+        );
     }
 
     /**
