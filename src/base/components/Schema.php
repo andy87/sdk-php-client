@@ -31,11 +31,11 @@ abstract class Schema
 
 
     /**
-     * Содержит ошибки схемы
+     * Содержит: ошибки\дебаг информацию и т.п.
      *
-     * @var null|array
+     * @var array
      */
-    protected ?array $_errors = null;
+    protected array $_log = [];
 
 
 
@@ -76,7 +76,7 @@ abstract class Schema
                     }
                 } else {
 
-                    $this->_errors[] = sprintf( static::ERROR_PROPERTY_NOT_FOUND, $className, $key, static::class );
+                    $this->_log[] = sprintf( static::ERROR_CLASS_NOT_FOUND, $className, $key, static::class );
                 }
 
             } elseif ( is_string( $params ) && class_exists( $params ) ) {
@@ -88,7 +88,7 @@ abstract class Schema
 
         } else {
 
-            $this->_errors[] = sprintf( static::ERROR_CLASS_NOT_FOUND, $key, static::class );
+            $this->_log[] = sprintf( static::ERROR_PROPERTY_NOT_FOUND, $key, static::class );
         }
     }
 
@@ -103,8 +103,18 @@ abstract class Schema
     /**
      * Получает ошибки схемы
      */
-    public function getErrors(): ?array
+    public function getInfo(): ?array
     {
-        return $this->_errors;
+        return $this->_log;
+    }
+
+    /**
+     * Добавляет информацию в лог
+     *
+     * @param string|array $log
+     */
+    public function addLog( string|array $log )
+    {
+        $this->_log[] = $log;
     }
 }

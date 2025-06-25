@@ -2,6 +2,7 @@
 
 namespace andy87\sdk\client\base\modules;
 
+use andy87\avito\client\schema\auth\AccessTokenSchema;
 use andy87\sdk\client\base\components\Account;
 
 /**
@@ -35,6 +36,26 @@ abstract class AbstractCache
     }
 
     /**
+     * @param Account $account
+     *
+     * @return null|AccessTokenSchema
+     */
+    public function getCacheAccessTokenSchema( Account $account ): ?AccessTokenSchema
+    {
+        $data = $this->getData( $account );
+
+        if ( empty( $data ) )
+        {
+            return null;
+        }
+
+        /** @var AccessTokenSchema $accessTokenSchema */
+        $accessTokenSchema = unserialize($data, [ 'allowed_classes' => [ AccessTokenSchema::class ] ]);
+
+        return $accessTokenSchema;
+    }
+
+    /**
      * Записывает данные в кэш для указанного аккаунта.
      *
      * @param Account $account
@@ -52,4 +73,5 @@ abstract class AbstractCache
      * @return string
      */
     abstract public function getData( Account $account ): string;
+
 }

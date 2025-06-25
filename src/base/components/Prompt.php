@@ -17,6 +17,9 @@ abstract class Prompt
     /** @var bool Статус использования префикса конфига */
     public const USE_PREFIX = true;
 
+    /** @var false Статус использования дебаг режима */
+    public const DEBUG = false;
+
     /** @var array|AuthorizationInterface[] Применяемые для авторизации классы */
     public const AUTH = [];
 
@@ -121,22 +124,16 @@ abstract class Prompt
 
     /**
      * Возвращает все публичные свойства запроса.
-     * используя простой каст в массив.
      *
      * @return ?array
      */
     public function release(): ?array
     {
-        $array = get_object_vars($this) ?? null;
-
-        if($array)
-        {
-            $array = array_filter($array, function ($value) {
-                return $value !== null;
-            });
-        }
-
-        return $array;
+        return array_filter(
+            (array)$this,
+            fn($v, $k) => $k[0] !== "\0",
+            ARRAY_FILTER_USE_BOTH
+        );
     }
 
     /**

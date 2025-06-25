@@ -48,10 +48,11 @@ interface ClientInterface
      * Авторизация в API партнера
      *
      * @param Account $account
+     * @param bool $useCache
      *
      * @return bool
      */
-    public function authorization( Account $account ): bool;
+    public function authorization( Account $account, bool $useCache = true ): bool;
 
     /**
      * Проверка отсутствия ошибок валидности токена

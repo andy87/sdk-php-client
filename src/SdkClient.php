@@ -40,12 +40,6 @@ abstract class SdkClient extends AbstractClient
 
         $response = $this->sendRequest( $request );
 
-        print_r([
-            __METHOD__ . ':' . __LINE__,
-            'response' => $response
-        ]);
-        exit();
-
         $log = [
             'method' => __METHOD__,
             'func_get_args' => func_get_args(),
@@ -57,12 +51,19 @@ abstract class SdkClient extends AbstractClient
 
         $log['handleResponse'] = $response;
 
-        if ( $response->isOk() )
+        if ( $response->isOk() || $prompt::DEBUG )
         {
             if ( $schema = $this->constructSchema( $request, $response ) )
             {
-                if ( $schema->validate( $prompt ) )
+                if ( $schema->validate( $prompt ) || $prompt::DEBUG )
                 {
+                    if ($prompt::DEBUG)
+                    {
+                        $schema->addLog([
+                            'response' => $response
+                        ]);
+                    }
+
                     return $schema;
 
                 } else {
@@ -237,7 +238,7 @@ abstract class SdkClient extends AbstractClient
         {
             $account = $this->getConfig()->getAccount();
 
-            if ( $this->authorization( $account ) )
+            if ( $this->reAuthorization( $account ) )
             {
                 $nextResponse = $this->modules->getTransport()->sendRequest( $request );
 
@@ -289,24 +290,15 @@ abstract class SdkClient extends AbstractClient
     {
         return $request;
     }
-
     /**
-     * Авторизация пользователя.
-     *
      * @param Account $account
      *
-     * @return bool
+     * @return mixed
      *
      * @throws Exception
      */
-    abstract public function authorization( Account $account ): bool;
-
-    /**
-     * Проверка есть ли ошибки в ответе, решаемые повторной авторизацией
-     *
-     * @param Response $response
-     *
-     * @return bool
-     */
-    abstract public function isTokenInvalid( Response $response ): bool;
+    public function reAuthorization( Account $account ): bool
+    {
+        return $this->authorization( $account, false );
+    }
 }
