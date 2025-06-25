@@ -57,22 +57,29 @@ class Container implements ContainerInterface
      */
     public function get( string $id ): ?object
     {
-        if ( !isset($this->instances[$id]) )
+        $className = $this->getClassRegistry($id);
+
+        if ($className)
         {
-            if ($class = $this->classRegistry->getClass($id))
+            if ( !isset($this->instances[$id]) )
             {
-                if ( class_exists($class) )
+                if ($class = $this->classRegistry->getClass($id))
                 {
-                    $this->instances[$id] = new $class();
+                    if ( class_exists($class) )
+                    {
+                        $this->instances[$id] = new $class();
 
-                } elseif ( is_callable($class) ) {
+                    } elseif ( is_callable($class) ) {
 
-                    $this->instances[$id] = $class();
+                        $this->instances[$id] = $class();
+                    }
                 }
             }
-        }
 
-        return $this->instances[$id];
+            return $this->instances[$id];
+        }
+        
+        return null;
     }
 
     /**
