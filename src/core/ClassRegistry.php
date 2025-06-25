@@ -2,18 +2,14 @@
 
 namespace andy87\sdk\client\core;
 
-use andy87\sdk\client\base\components\MockManager;
 use Exception;
 use andy87\sdk\client\SdkClient;
-use andy87\sdk\client\base\components\Schema;
-use andy87\sdk\client\core\transport\Request;
-use andy87\sdk\client\core\transport\Response;
-use andy87\sdk\client\base\components\Account;
-use andy87\sdk\client\base\modules\AbstractTest;
-use andy87\sdk\client\base\modules\AbstractCache;
-use andy87\sdk\client\base\modules\AbstractLogger;
-use andy87\sdk\client\base\modules\AbstractTransport;
+use andy87\sdk\client\transports\CurlTransport;
+use andy87\sdk\client\base\components\MockManager;
 use andy87\sdk\client\base\interfaces\ClientInterface;
+use andy87\sdk\client\base\components\{ Schema, Account };
+use andy87\sdk\client\core\transport\{ Request, Response };
+use andy87\sdk\client\base\modules\{ AbstractTest, AbstractCache, AbstractLogger };
 
 /**
  * Class Container
@@ -32,7 +28,7 @@ class ClassRegistry
         ClientInterface::CLIENT => SdkClient::class,
         ClientInterface::REQUEST => Request::class,
         ClientInterface::RESPONSE => Response::class,
-        ClientInterface::TRANSPORT => AbstractTransport::class,
+        ClientInterface::TRANSPORT => CurlTransport::class,
         ClientInterface::CACHE => AbstractCache::class,
         ClientInterface::TEST => AbstractTest::class,
         ClientInterface::ACCOUNT => Account::class,

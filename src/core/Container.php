@@ -51,11 +51,11 @@ class Container implements ContainerInterface
      *
      * @param string $id
      *
-     * @return object
+     * @return ?object
      *
      * @throws Exception
      */
-    public function get( string $id ): object
+    public function get( string $id ): ?object
     {
         if ( !isset($this->instances[$id]) )
         {
