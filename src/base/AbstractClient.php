@@ -171,17 +171,21 @@ abstract class AbstractClient implements ClientInterface
     /**
      * Обработчик ошибок клиента.
      *
+     * @param string $method
+     * @param int $line
      * @param string|array $data
      *
      * @return void
      *
      * @throws Exception
      */
-    public function errorHandler( string|array $data ): void
+    public function errorHandler( string $method, int $line, string|array $data ): void
     {
         if ( $logger = $this->modules->getLogger() )
         {
-            $logger->errorHandler( $data );
+            $logger->errorHandler([
+                "$method:$line" => $data
+            ]);
         }
     }
 }

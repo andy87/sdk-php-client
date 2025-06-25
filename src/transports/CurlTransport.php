@@ -49,10 +49,7 @@ final class CurlTransport extends AbstractTransport
 
             $error = 'Failed to initialize cURL session.';
 
-            $this->errorHandler([
-                'method' => __METHOD__,
-                'message' => $error,
-            ]);
+            $this->errorHandler(__METHOD__, __LINE__, $error);
 
             $response = new Response( $request, 0 );
 

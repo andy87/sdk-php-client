@@ -66,7 +66,9 @@ interface ClientInterface
     /**
      * Обработчик ошибок
      *
+     * @param string $method
+     * @param int $line
      * @param string|array $data
      */
-    public function errorHandler( string|array $data ): void;
+    public function errorHandler( string $method, int $line, string|array $data ): void;
 }

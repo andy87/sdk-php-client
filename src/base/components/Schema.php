@@ -77,7 +77,6 @@ abstract class Schema
                 } else {
 
                     $this->addLog(sprintf( static::ERROR_CLASS_NOT_FOUND, $className, $key, static::class ));
-                    $this->addLog(['data' => $all]);
                 }
 
             } elseif ( is_string( $params ) && class_exists( $params ) ) {
@@ -90,12 +89,15 @@ abstract class Schema
         } else {
 
             $this->addLog(sprintf( static::ERROR_PROPERTY_NOT_FOUND, $key, static::class ));
-            $this->addLog(['data' => $all]);
         }
     }
 
     /**
-     * {@inheritDoc}
+     * Валидация ответа от API
+     *
+     * @param Prompt $prompt
+     *
+     * @return bool
      */
     public function validate( Prompt $prompt ): bool
     {

@@ -71,7 +71,7 @@ abstract class SdkClient extends AbstractClient
             ];
         }
 
-        $this->errorHandler($log);
+        $this->errorHandler(__METHOD__, __LINE__, $log);
 
         return null;
     }
@@ -128,8 +128,7 @@ abstract class SdkClient extends AbstractClient
 
                 } else {
 
-                    $this->errorHandler([
-                        'method' => __METHOD__,
+                    $this->errorHandler(__METHOD__, __LINE__, [
                         'message' => 'Mock class not exists',
                         'prompt' => $prompt,
                         'mockClass' => $mockClass
@@ -194,7 +193,7 @@ abstract class SdkClient extends AbstractClient
      */
     protected function constructSchema( RequestInterface $request, Response $response ): ?Schema
     {
-        $schemaClassName = $request->getPrompt()->getSchema();
+        $schemaClassName = $request->getPrompt()->getSchema( $response );
 
         if ( class_exists( $schemaClassName ) )
         {
@@ -206,13 +205,11 @@ abstract class SdkClient extends AbstractClient
             return $schema;
 
         } else {
-            $this->errorHandler([
-                __METHOD__ . ':' . __LINE__ => [
-                    'error' => 'Schema class not found',
-                    'request' => $request,
-                    'response' => $response,
-                    'schemaClassName' => $schemaClassName
-                ]
+            $this->errorHandler(__METHOD__, __LINE__, [
+                'error' => 'Schema class not found',
+                'request' => $request,
+                'response' => $response,
+                'schemaClassName' => $schemaClassName
             ]);
         }
 
@@ -274,7 +271,7 @@ abstract class SdkClient extends AbstractClient
             }
         }
 
-        if (isset($errorLog)) $this->errorHandler($errorLog);
+        if (isset($errorLog)) $this->errorHandler(__METHOD__, __LINE__, $errorLog );
 
         return $response;
     }
@@ -286,17 +283,5 @@ abstract class SdkClient extends AbstractClient
     protected function prepareAuthentication( Prompt $prompt, RequestInterface $request ): RequestInterface
     {
         return $request;
-    }
-
-    /**
-     * @param Account $account
-     *
-     * @return mixed
-     *
-     * @throws Exception
-     */
-    protected function reAuthorization( Account $account ): bool
-    {
-        return $this->authorization( $account, false );
     }
 }

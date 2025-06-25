@@ -42,13 +42,15 @@ abstract class AbstractTransport
     /**
      * Обработчик ошибок
      *
+     * @param string $method
+     * @param int $line
      * @param string|array|Exception $data
      *
      * @return void
      *
      * @throws Exception
      */
-    protected function errorHandler( string|array|Exception $data ): void
+    protected function errorHandler( string $method, int $line, string|array|Exception $data ): void
     {
         if ( $data instanceof Exception )
         {
@@ -59,15 +61,11 @@ abstract class AbstractTransport
                 'trace' => $data->getTraceAsString()
             ];
 
-        } elseif ( is_string( $data ) ) {
-
-            $error = [ 'message' => $data  ];
-
         } else {
 
             $error = $data;
         }
 
-        $this->client->errorHandler( $error );
+        $this->client->errorHandler( $method, $line, $error );
     }
 }
