@@ -78,7 +78,7 @@ class Container implements ContainerInterface
 
             return $this->instances[$id];
         }
-        
+
         return null;
     }
 

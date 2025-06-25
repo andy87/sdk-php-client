@@ -101,7 +101,7 @@ class Modules
      */
     private function constructTransport(AbstractClient $client): AbstractTransport
     {
-        $transportClass = $this->getContainer()->getClassRegistry(ClientInterface::TEST );
+        $transportClass = $this->getContainer()->getClassRegistry(ClientInterface::TRANSPORT );
 
         return new $transportClass( $client );
     }
