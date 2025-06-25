@@ -33,9 +33,9 @@ abstract class Schema
     /**
      * Содержит: ошибки\дебаг информацию и т.п.
      *
-     * @var array
+     * @var ?array
      */
-    protected array $_log = [];
+    protected ?array $_log = null;
 
 
 
@@ -77,6 +77,7 @@ abstract class Schema
                 } else {
 
                     $this->addLog(sprintf( static::ERROR_CLASS_NOT_FOUND, $className, $key, static::class ));
+                    $this->addLog(['data' => $all]);
                 }
 
             } elseif ( is_string( $params ) && class_exists( $params ) ) {
@@ -89,6 +90,7 @@ abstract class Schema
         } else {
 
             $this->addLog(sprintf( static::ERROR_PROPERTY_NOT_FOUND, $key, static::class ));
+            $this->addLog(['data' => $all]);
         }
     }
 
@@ -115,6 +117,8 @@ abstract class Schema
      */
     public function addLog( string|array $log ): void
     {
+        if ( $this->_log === null ) $this->_log = [];
+
         $this->_log[] = $log;
     }
 }

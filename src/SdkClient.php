@@ -114,7 +114,7 @@ abstract class SdkClient extends AbstractClient
      *
      * @throws Exception
      */
-    private function mockHandle( Prompt $prompt ): ?string
+    protected function mockHandle( Prompt $prompt ): ?string
     {
         if ( !$prompt->getMock() )
         {
@@ -159,7 +159,7 @@ abstract class SdkClient extends AbstractClient
      *
      * @return Url
      */
-    private function constructUrl( Config $config, Prompt $prompt ): Url
+    protected function constructUrl( Config $config, Prompt $prompt ): Url
     {
         if ( $prefix = $config->getPrefix() )
         {
@@ -229,7 +229,7 @@ abstract class SdkClient extends AbstractClient
      *
      * @throws Exception
      */
-    private function handleResponse( Request $request, Response $response ): Response
+    protected function handleResponse( Request $request, Response $response ): Response
     {
         if ( $this->isTokenInvalid( $response ) )
         {
@@ -283,10 +283,11 @@ abstract class SdkClient extends AbstractClient
     /**
      * Добавление данных требуемых для авторизации.
      */
-    public function prepareAuthentication( Prompt $prompt, RequestInterface $request ): RequestInterface
+    protected function prepareAuthentication( Prompt $prompt, RequestInterface $request ): RequestInterface
     {
         return $request;
     }
+
     /**
      * @param Account $account
      *
@@ -294,7 +295,7 @@ abstract class SdkClient extends AbstractClient
      *
      * @throws Exception
      */
-    public function reAuthorization( Account $account ): bool
+    protected function reAuthorization( Account $account ): bool
     {
         return $this->authorization( $account, false );
     }

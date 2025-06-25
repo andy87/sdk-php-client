@@ -118,9 +118,9 @@ class Response implements ResponseInterface
     /**
      * Проверяет, является ли ответ успешным (код статуса 2xx).
      *
-     * @return bool
+     * @return ?bool
      */
-    public function isOk(): bool
+    public function isOk(): ?bool
     {
         return $this->statusCode;
     }

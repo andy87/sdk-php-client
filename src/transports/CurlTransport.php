@@ -18,6 +18,8 @@ use andy87\sdk\client\core\transport\{ Query, Response };
  */
 final class CurlTransport extends AbstractTransport
 {
+    public const EMPTY_RESPONSE = '{empty response}';
+
     public array $options = [
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -65,18 +67,14 @@ final class CurlTransport extends AbstractTransport
             $this->options[CURLOPT_HTTPHEADER] = $query->getHeaders();
             $this->options[CURLOPT_URL] = $url;
 
-            curl_setopt_array($curl, $this->options);
+            curl_setopt_array( $curl, $this->options );
 
-            $content = curl_exec($curl);
-
-            curl_close($curl);
-
-            exit( PHP_EOL . $url . PHP_EOL . $content . PHP_EOL );
-
+            $content = curl_exec($curl) ?? self::EMPTY_RESPONSE;
             $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE) ?: null;
-            $curlInfo = $this->handleCustomParams( $curl, $query );
 
             $response = new Response( $request, $statusCode, $content );
+
+            $curlInfo = $this->handleCustomParams( $curl, $query );
 
             curl_close($curl);
 
