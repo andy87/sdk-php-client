@@ -4,6 +4,8 @@ namespace andy87\sdk\client\base\components;
 
 use andy87\sdk\client\base\modules\AbstractMock;
 use andy87\sdk\client\base\interfaces\AuthorizationInterface;
+use andy87\sdk\client\core\transport\Response;
+use andy87\sdk\client\helpers\ContentType;
 
 /**
  * Класс Prompt
@@ -74,13 +76,14 @@ abstract class Prompt
     protected ?string $mock = null;
 
 
-
     /**
      * Возвращает схему запроса.
      *
+     * @param Response $response
+     *
      * @return string
      */
-    public function getSchema(): string
+    public function getSchema( Response $response ): string
     {
         return $this->schema;
     }
@@ -113,6 +116,30 @@ abstract class Prompt
     public function getContentType(): ?string
     {
         return $this->contentType;
+    }
+
+    /**
+     * Проверяет, является ли тип контента запроса заданным.
+     *
+     * @param string<ContentType> $contentType Тип контента для проверки.
+     *
+     * @return bool
+     */
+    public function contentTypeIs( string $contentType ): bool
+    {
+        return $this->contentType === $contentType;
+    }
+
+    /**
+     * Проверяет, содержится ли тип контента запроса в заданном массиве типов.
+     *
+     * @param array|string<ContentType>[] $contentTypes Массив типов контента для проверки.
+     *
+     * @return bool
+     */
+    public function contentTypeIn( array $contentTypes ): bool
+    {
+        return in_array( $this->contentType, $contentTypes, true);
     }
 
     /**

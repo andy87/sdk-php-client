@@ -55,6 +55,15 @@ interface ClientInterface
     public function authorization( Account $account, bool $isGetFromCache = true ): bool;
 
     /**
+     * Повторная авторизация в API партнера при обнаружении ошибок валидности токена
+     *
+     * @param Account $account
+     *
+     * @return bool
+     */
+    public function reAuthorization( Account $account ): bool;
+
+    /**
      * Проверка отсутствия ошибок валидности токена
      *
      * @param Response $response

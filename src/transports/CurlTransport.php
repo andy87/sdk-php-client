@@ -70,23 +70,37 @@ final class CurlTransport extends AbstractTransport
 
         } else {
 
-            $this->handleData( $query );
+            $this->handleData( $request, $query );
 
-            $url = $query->getEndpoint( $query->getMethod(), $request->getPrompt()->getContentType() );
+            $url = $query->getEndpoint( $request );
 
             $this->options[CURLOPT_HTTPHEADER] = $query->getHeaders();
             $this->options[CURLOPT_URL] = $url;
 
+            $this->displayOptions($this->options);
+
             curl_setopt_array( $curl, $this->options );
 
             $content = curl_exec($curl) ?? self::EMPTY_RESPONSE;
+
+            echo PHP_EOL;
+            print_r([ 'content' => $content ]);
+            echo PHP_EOL;
+            sleep(5);
+
             $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE) ?: null;
 
             $response = new Response( $request, $statusCode, $content );
 
             $curlInfo = $this->handleCustomParams( $curl, $query );
 
+            echo PHP_EOL;
+            print_r([ 'curlInfo' => $curlInfo ]);
+            echo PHP_EOL;
+
             curl_close($curl);
+
+            sleep(5);
 
             if ( !empty($curlInfo)) $response->setCustomParams( $curlInfo );
         }
@@ -143,5 +157,53 @@ final class CurlTransport extends AbstractTransport
         }
 
         return $params;
+    }
+
+    private function displayOptions( array $options ): void
+    {
+        $naming = [
+            CURLOPT_ENCODING => 'CURLOPT_ENCODING',
+            CURLOPT_MAXREDIRS => 'CURLOPT_MAXREDIRS',
+            CURLOPT_TIMEOUT => 'CURLOPT_TIMEOUT',
+            CURLOPT_RETURNTRANSFER => 'CURLOPT_RETURNTRANSFER',
+            CURLOPT_HTTP_VERSION => 'CURLOPT_HTTP_VERSION',
+            CURLOPT_HTTPHEADER => 'CURLOPT_HTTPHEADER',
+            CURLOPT_URL => 'CURLOPT_URL',
+            CURLOPT_POSTFIELDS => 'CURLOPT_POSTFIELDS',
+            CURLOPT_FOLLOWLOCATION => 'CURLOPT_FOLLOWLOCATION',
+            CURLOPT_CUSTOMREQUEST => 'CURLOPT_CUSTOMREQUEST',
+        ];
+
+        echo PHP_EOL;
+
+        foreach ($options as $key => $value)
+        {
+            if ( is_string($value) AND empty($value) ) $value = '< string : empty >';
+
+            if ( $value === null ) $value = '{null}';
+
+            if ( isset($naming[$key]) )
+            {
+                if ( is_array($value) || is_object($value) ) {
+                    $value = print_r($value, true);
+                } elseif ( is_bool($value) ) {
+                    $value = $value ? '< bool : true >' : '< bool : false >';
+                } elseif ( is_int($value) || is_float($value) ) {
+                    $value = (string) $value;
+                }
+
+                $option = sprintf("%s: %s\n", $naming[$key], $value );
+
+            } else {
+
+                $option = sprintf("Unknown option (%d): %s\n", $key, $value );
+            }
+
+            echo $option;
+        }
+
+        echo PHP_EOL;
+
+        sleep(5);
     }
 }
