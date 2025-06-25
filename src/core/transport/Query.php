@@ -2,8 +2,9 @@
 
 namespace andy87\sdk\client\core\transport;
 
+use andy87\sdk\client\base\interfaces\RequestInterface;
 use andy87\sdk\client\helpers\ContentType;
-use andy87\sdk\client\helpers\Method;
+use andy87\sdk\client\helpers\MethodRegistry;
 
 /**
  * Класс Query
@@ -42,29 +43,76 @@ class Query
     }
 
     /**
+     * Проверяет, является ли метод HTTP запроса указанным методом
+     *
+     * @param string|string<MethodRegistry> $method Метод HTTP запроса (например, 'GET', 'POST', 'PUT', 'DELETE')
+     *
+     * @return bool Возвращает true, если метод совпадает, иначе false
+     */
+    public function methodIs( string $method ): bool
+    {
+        return $this->method === $method;
+    }
+
+    /**
      * Возвращает URL-адрес конечной точки API
      *
-     * @param string<Method> $method
-     * @param string<ContentType> $contentType
+     * @param RequestInterface $request
      *
      * @return string
      */
-    public function getEndpoint( string $method, string $contentType): string
+    public function getEndpoint( RequestInterface $request ): string
     {
         $url = $this->endpoint;
 
-        $url = rtrim($url, '?&');
+        $url = rtrim($url, '?&/');
 
-        if ( $method === Method::GET || $contentType === ContentType::X_WWW_FORM_URLENCODED )
+        if ( $this->isApplyQueryDataToUrl( $request ) )
         {
-            $data = $this->getData();
+            $url = $this->applyDataToUrl( $url, $this->getData() );
+        }
 
-            if ( !empty($data) )
+        return $url;
+    }
+
+    /**
+     * Проверяет, нужно ли добавлять данные к URL-адресу конечной точки API
+     *
+     * @param RequestInterface $request Данные запроса
+     *
+     * @return bool Возвращает true, если данные нужно добавить к URL, иначе false
+     */
+    private function isApplyQueryDataToUrl(RequestInterface $request ): bool
+    {
+        if ( !empty( $request->getQuery()->getData() ) )
+        {
+            if ( $this->methodIs( MethodRegistry::GET ) )
             {
-                $url .= ( str_contains($url, '?') ? '&' : '?' );
-
-                $url .= http_build_query($data);
+                return true;
             }
+
+            if ( $request->getPrompt()::APPLY_QUERY_TO_URL )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Добавляет к переданному URL-адресу конечной точки API данные
+     *
+     * @param string $url
+     * @param array $data
+     * @return string
+     */
+    private function applyDataToUrl( string $url, array $data ): string
+    {
+        if ( !empty($data) )
+        {
+            $url .= ( str_contains($url, '?') ? '&' : '?' );
+            $url .= http_build_query($data);
         }
 
         return $url;

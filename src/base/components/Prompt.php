@@ -17,6 +17,9 @@ abstract class Prompt
     /** @var bool Статус использования префикса конфига */
     public const USE_PREFIX = true;
 
+    /** @var bool Статус добавления данных из query string в URL */
+    public const APPLY_QUERY_TO_URL = false;
+
     /** @var false Статус использования дебаг режима */
     public const DEBUG = false;
 
