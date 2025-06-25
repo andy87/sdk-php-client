@@ -63,9 +63,9 @@ abstract class Prompt
     /**
      * Мок запроса, если мок задан.
      *
-     * @var null|AbstractMock $mock
+     * @var null|string<AbstractMock::class> $mock
      */
-    protected ?AbstractMock $mock = null;
+    protected ?string $mock = null;
 
 
 
@@ -142,9 +142,9 @@ abstract class Prompt
     /**
      * Устанавливает мок запроса.
      *
-     * @param AbstractMock $mock
+     * @param null|string<AbstractMock::class> $mock
      */
-    public function setMock(AbstractMock $mock): void
+    public function setMock( ?string $mock ): void
     {
         if (!$this->mock) $this->mock = $mock;
     }
@@ -156,6 +156,18 @@ abstract class Prompt
      */
     public function getMock(): ?AbstractMock
     {
-        return $this->mock;
+        if ($this->mock)
+        {
+            if ( !isset(MockManager::$mockInstances[$this->mock]) )
+            {
+                $mockClass = $this->mock;
+
+                MockManager::$mockInstances[$this->mock] = new $mockClass();
+            }
+
+            return MockManager::$mockInstances[$this->mock];
+        }
+
+        return null;
     }
 }

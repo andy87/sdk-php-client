@@ -17,6 +17,11 @@ class MockManager
      */
     public array $map;
 
+    /**
+     * @var array|AbstractMock[] Библиотека созданных моков
+     */
+    public static array $mockInstances = [];
+
 
 
     /**
@@ -46,9 +51,9 @@ class MockManager
     /**
      * @param string $promptClass
      *
-     * @return ?AbstractMock
+     * @return ?string<AbstractMock>
      */
-    public function get( string $promptClass ): ?AbstractMock
+    public function findClass(string $promptClass ): ?string
     {
         return $this->map[$promptClass] ?? null;
     }

@@ -7,7 +7,7 @@ use andy87\sdk\client\core\transport\{Request, Url, Response};
 use andy87\sdk\client\base\AbstractClient;
 use andy87\sdk\client\base\modules\AbstractMock;
 use andy87\sdk\client\base\components\{ Account, Config, Prompt, Schema };
-use andy87\sdk\client\base\interfaces\{ClientInterface, MockInterface, RequestInterface};
+use andy87\sdk\client\base\interfaces\{ClientInterface, RequestInterface};
 
 /**
  * Класс SdkClient
@@ -78,7 +78,7 @@ abstract class SdkClient extends AbstractClient
             $log['message'] = 'Response error (is not OK). Status code: ' . $response->getStatusCode();
         }
 
-        $this->modules->getLogger()?->errorHandler($log);
+        $this->errorHandler($log);
 
         return null;
     }
@@ -112,20 +112,30 @@ abstract class SdkClient extends AbstractClient
      *
      * @param Prompt $prompt
      *
-     * @return null|AbstractMock
+     * @return null|string<AbstractMock>
+     *
+     * @throws Exception
      */
-    private function mockHandle( Prompt $prompt ): ?AbstractMock
+    private function mockHandle( Prompt $prompt ): ?string
     {
         if ( !$prompt->getMock() )
         {
-            if ( $moduleMock = $this->modules->getMockManager() )
+            if ( $mockManager = $this->modules->getMockManager() )
             {
-                $mockClass = $moduleMock->get( $prompt::class );
+                $mockClass = $mockManager->findClass( $prompt::class );
 
                 if ( class_exists( $mockClass ) )
                 {
-                    /** @var AbstractMock $mock */
-                    return new $mockClass();
+                    return $mockClass;
+
+                } else {
+
+                    $this->errorHandler([
+                        'method' => __METHOD__,
+                        'message' => 'Mock class not exists',
+                        'prompt' => $prompt,
+                        'mockClass' => $mockClass
+                    ]);
                 }
             }
         }
@@ -255,7 +265,7 @@ abstract class SdkClient extends AbstractClient
             }
         }
 
-        if (isset($errorLog)) $this->modules->getLogger()?->errorHandler($errorLog);
+        if (isset($errorLog)) $this->errorHandler($errorLog);
 
         return $response;
     }
