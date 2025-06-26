@@ -3,6 +3,7 @@
 namespace andy87\sdk\client\base\interfaces;
 
 use andy87\sdk\client\base\components\Prompt;
+use andy87\sdk\client\base\components\Schema;
 use andy87\sdk\client\core\transport\Response;
 use andy87\sdk\client\base\components\Account;
 
@@ -36,6 +37,15 @@ interface ClientInterface
 
 
     /**
+     * Отправляет запрос к API партнера.
+     *
+     * @param Prompt $prompt
+     *
+     * @return null|Schema
+     */
+    public function send( Prompt $prompt ): ?Schema;
+
+    /**
      * Собирает конечный URL для API запроса.
      *
      * @param Prompt $prompt
@@ -43,6 +53,13 @@ interface ClientInterface
      * @return string
      */
     public function constructEndpoint( Prompt $prompt ): string;
+
+    /**
+     * Проверяет работу клиента на тестовых API запросах.
+     *
+     * @return void
+     */
+    public function test(): void;
 
     /**
      * Авторизация в API партнера

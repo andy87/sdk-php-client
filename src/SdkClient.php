@@ -5,9 +5,9 @@ namespace andy87\sdk\client;
 use Exception;
 use andy87\sdk\client\base\AbstractClient;
 use andy87\sdk\client\base\modules\AbstractMock;
-use andy87\sdk\client\base\components\{ Account, Config, Prompt, Schema };
-use andy87\sdk\client\base\interfaces\{ClientInterface, RequestInterface};
-use andy87\sdk\client\core\transport\{Request, Url, Response};
+use andy87\sdk\client\core\transport\{ Request, Url, Response };
+use andy87\sdk\client\base\components\{ Config, Prompt, Schema };
+use andy87\sdk\client\base\interfaces\{ ClientInterface, RequestInterface };
 
 /**
  * Класс SdkClient
