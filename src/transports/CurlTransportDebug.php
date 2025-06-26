@@ -17,6 +17,21 @@ use andy87\sdk\client\helpers\{ ContentType , MethodRegistry };
  */
 final class CurlTransportDebug extends CurlTransport
 {
+    private const NAMING = [
+        CURLOPT_ENCODING => 'CURLOPT_ENCODING',
+        CURLOPT_MAXREDIRS => 'CURLOPT_MAXREDIRS',
+        CURLOPT_TIMEOUT => 'CURLOPT_TIMEOUT',
+        CURLOPT_RETURNTRANSFER => 'CURLOPT_RETURNTRANSFER',
+        CURLOPT_HTTP_VERSION => 'CURLOPT_HTTP_VERSION',
+        CURLOPT_HTTPHEADER => 'CURLOPT_HTTPHEADER',
+        CURLOPT_URL => 'CURLOPT_URL',
+        CURLOPT_POSTFIELDS => 'CURLOPT_POSTFIELDS',
+        CURLOPT_FOLLOWLOCATION => 'CURLOPT_FOLLOWLOCATION',
+        CURLOPT_CUSTOMREQUEST => 'CURLOPT_CUSTOMREQUEST',
+    ];
+
+
+
     /**
      * Отправляет запрос к API.
      *
@@ -55,6 +70,21 @@ final class CurlTransportDebug extends CurlTransport
 
             curl_setopt_array( $curl, $this->options );
 
+            $cURL_options = [];
+
+            foreach ($this->options as $key => $value)
+            {
+                $cURL_options[$key] = [ $this->getCurlOptionName($key), $value ];
+            }
+
+            print_r([
+                'curl' => is_resource($curl) ? 'Resource' : 'Not a resource',
+                'curl_getinfo' => $cURL_options,
+                'this->options' => $this->options,
+            ]);
+
+            sleep(3);
+
             $content = curl_exec($curl) ?? self::EMPTY_RESPONSE;
             $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE) ?: null;
             $curlInfo = $this->handleCustomParams( $curl, $query );
@@ -70,14 +100,7 @@ final class CurlTransportDebug extends CurlTransport
 
             $response = new Response( $request, $statusCode, $content );
 
-
-            echo PHP_EOL;
-            print_r([ 'curlInfo' => $curlInfo ]);
-            echo PHP_EOL;
-
             curl_close($curl);
-
-            sleep(5);
 
             if ( !empty($curlInfo)) $response->setCustomParams( $curlInfo );
         }
@@ -92,19 +115,6 @@ final class CurlTransportDebug extends CurlTransport
      */
     private function displayOptions( array $options ): void
     {
-        $naming = [
-            CURLOPT_ENCODING => 'CURLOPT_ENCODING',
-            CURLOPT_MAXREDIRS => 'CURLOPT_MAXREDIRS',
-            CURLOPT_TIMEOUT => 'CURLOPT_TIMEOUT',
-            CURLOPT_RETURNTRANSFER => 'CURLOPT_RETURNTRANSFER',
-            CURLOPT_HTTP_VERSION => 'CURLOPT_HTTP_VERSION',
-            CURLOPT_HTTPHEADER => 'CURLOPT_HTTPHEADER',
-            CURLOPT_URL => 'CURLOPT_URL',
-            CURLOPT_POSTFIELDS => 'CURLOPT_POSTFIELDS',
-            CURLOPT_FOLLOWLOCATION => 'CURLOPT_FOLLOWLOCATION',
-            CURLOPT_CUSTOMREQUEST => 'CURLOPT_CUSTOMREQUEST',
-        ];
-
         echo PHP_EOL;
 
         foreach ($options as $key => $value)
@@ -113,7 +123,7 @@ final class CurlTransportDebug extends CurlTransport
 
             if ( $value === null ) $value = '{null}';
 
-            if ( isset($naming[$key]) )
+            if ( isset(self::NAMING[$key]) )
             {
                 if ( is_array($value) || is_object($value) ) {
 
@@ -128,9 +138,14 @@ final class CurlTransportDebug extends CurlTransport
                     $value = (string) $value;
                 }
 
-                $option = sprintf("%s: %s\n", $naming[$key], $value );
+                $option = sprintf("%s: %s\n", $this->getCurlOptionName($key), $value );
 
             } else {
+
+                if ( is_array($value) || is_object($value) ) {
+
+                    $value = print_r($value, true);
+                }
 
                 $option = sprintf("Unknown option (%d): %s\n", $key, $value );
             }
@@ -141,5 +156,15 @@ final class CurlTransportDebug extends CurlTransport
         echo PHP_EOL;
 
         sleep(5);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return string
+     */
+    private function getCurlOptionName(int $id ): string
+    {
+        return self::NAMING[$id] ?? 'Unknown option (' . $id . ')';
     }
 }
