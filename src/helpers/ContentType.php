@@ -5,6 +5,9 @@ namespace andy87\sdk\client\helpers;
 /**
  * Class ContentType
  *
+ * Полный список доступных типов контента можно найти на сайте IANA:
+ * @see https://www.iana.org/assignments/media-types/media-types.xhtml
+ *
  * @package src/hepers
  */
 abstract class ContentType

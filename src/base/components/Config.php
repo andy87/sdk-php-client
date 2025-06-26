@@ -2,7 +2,7 @@
 
 namespace andy87\sdk\client\base\components;
 
-use andy87\sdk\client\helpers\Port;
+use andy87\sdk\client\helpers\Protocol;
 use andy87\sdk\client\core\ClassRegistry;
 use andy87\sdk\client\base\interfaces\MockInterface;
 
@@ -13,8 +13,8 @@ use andy87\sdk\client\base\interfaces\MockInterface;
  */
 abstract class Config
 {
-    /** @var string $protocol Базовый Port для HTTP запросов к API (http\https) */
-    protected string $protocol = Port::HTTPS;
+    /** @var string $protocol Базовый Protocol для HTTP запросов к API (http\https) */
+    protected string $protocol = Protocol::HTTPS;
 
 
     /** @var string $host Базовый URI API, (например: api.example.com") */
