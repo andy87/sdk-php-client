@@ -160,7 +160,7 @@ abstract class AbstractClient implements ClientInterface
     {
         $mock = $request->getPrompt()->getMock();
 
-        if( $mock && $mock::BREAKPOINT == $mock::BREAKPOINT_RESPONSE )
+        if( $mock && $mock->typeIs($mock::BREAKPOINT_RESPONSE) )
         {
             return $mock->getData();
         }

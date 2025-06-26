@@ -33,7 +33,7 @@ abstract class SdkClient extends AbstractClient
 
         $mock = $request->getPrompt()->getMock();
 
-        if( $mock && $mock::BREAKPOINT == $mock::BREAKPOINT_REQUEST )
+        if( $mock && $mock->typeIs($mock::BREAKPOINT_REQUEST) )
         {
             return $mock->getData();
         }
