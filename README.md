@@ -1,6 +1,7 @@
 # SDK Client Core
 
-Универсальный PHP SDK-ядро для построения API-клиентов с расширяемой архитектурой, поддержкой авторизации, транспорта, мока и валидации. Может быть использовано как основа для конкретных интеграционных клиентов (например, для работы с внешними API-партнёрами).
+Универсальное PHP SDK-ядро для создания API-клиентов, с расширяемой архитектурой, поддержкой авторизации, моков и валидации.
+Сделано для использования как основа под конкретные клиенты для работы с API.
 
 ---
 
@@ -10,7 +11,10 @@
 composer require andy87/sdk-php-client
 ```
 
-> ⚠️ Библиотека ориентирована на PHP 8.0+
+Требования:
+> ⚠️ Библиотека ориентирована на PHP 8.0+  
+- ext-curl  
+- ext-http  
 
 ---
 
@@ -61,18 +65,18 @@ composer require andy87/sdk-php-client
 
 class CustomClient extends SdkClient
 {
-    // Для создания клиента достаточно реализовать методы с реализацией под конкретного партнёра.
+    // Для создания клиента достаточно реализовать методы с логикой под конкретного партнёра.
     
     public function authorization( Account $account, bool $isGetFromCache = true ): bool {
         // Реализация авторизации
     }
     
-    public function reAuthorization( Account $account ): bool {
-        // Реализация повторной авторизации если метод `isTokenInvalid` вернул true
+    public function isTokenInvalid( Response $response ): bool {
+        // Проверка отсутствия в ответеинформации о невалидном токене
     }
     
-    public function isTokenInvalid( Response $response ): bool {
-        // Проверка валидности ответа
+    public function reAuthorization( Account $account ): bool {
+        // Реализация повторной авторизации если метод `isTokenInvalid` вернул true
     }
 }
 ```
@@ -91,19 +95,24 @@ class CustomConfig extends Config
     protected string $protocol = Protocol::HTTPS; // Протокол ( по умолчанию `https` )
     protected string $host; // Хост API, например `api.example.com`
 
-    // Расширенные, необязательныре, параметры
-    protected ?string $prefix = null; // Префикс URL, например `/api/v1` ( на выхде для Prompt::$path = 'example` будет `https://api.example.com/api/v1/example` )'
-    protected array $headers = []; // Дополнительные заголовки для запросов
+    // Расширенные, необязательные, параметры
+    protected ?string $prefix = null; // Префикс URL, например `/api/v1`
+    // на выхде для Prompt::$path = 'example` будет `https://api.example.com/api/v1/example`'
+
+    protected array $headers = []; // Дополнительные заголовки для всех запросов
 
     // Переопределения используемых классов
     protected array $registryOverrides = [
         ClientInterface::CACHE => CacheModule::class, // Переопределение модуля кэша
     ];
 
-    // Мок-ответы для тестирования
+    // Мок-ответы для тестирования ( список моков )
     protected array $mockList = [
         CustomPrompt::class => CustomPromptMock::class
     ];
+    
+    // можно по необходимым условиям добавить дополнительные Mock-ответы
+    // используя метод `updateMockList( MockInterface[] )`
 
 }
 ```

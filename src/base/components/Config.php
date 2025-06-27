@@ -134,4 +134,18 @@ abstract class Config
     {
         return $this->mockList;
     }
+
+    /**
+     * Дополняет список `mockList` новыми моками и обновляет старые.
+     *
+     * @param array $mockList
+     *
+     * @return $this
+     */
+    public function updateMockList( array $mockList ): self
+    {
+        $this->mockList = array_merge($this->mockList, $mockList);
+
+        return $this;
+    }
 }
